@@ -11,8 +11,6 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "heroku": "^7.42.6",
-    "mysql": "^2.18.1",
-    "mysql-server": "^1.0.5",
     "nodemon": "^2.0.4"
   }
 }
