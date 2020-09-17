@@ -1,6 +1,6 @@
 var discord = require('discord.js');
 var client = new discord.Client();
-var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.DmNMMQ.uhN0FtBvisVROznbrGleGBAXEiU'
+var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
 var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
 var prefix = "!"
 
