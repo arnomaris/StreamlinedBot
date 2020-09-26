@@ -5,6 +5,7 @@ var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
 var prefix = "!"
 
 var photoContestChannel = '742420136488599653'
+var suggestionChannel = '565445147324579851'
 var streamlinedGuild
 var suggestionRules
 
@@ -56,7 +57,11 @@ function isCommand(command, message){
 client.on('message', (message) => {
     if (message.channel.id == photoContestChannel){
         message.react('👍')
-        .catch(console.error);
+        .catch(console.error)
+    } else if (message.channel.id == suggestionChannel){
+        message.react('👍')
+            .then(message.react('👎'))
+            .catch(console.error)
     };
     if(isAdmin(message)){
         if(isCommand("cheese", message)){
