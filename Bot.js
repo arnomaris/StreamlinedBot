@@ -1,15 +1,32 @@
-var discord = require('discord.js');
-var client = new discord.Client();
-var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
-var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
-var prefix = "!"
+const discord = require('discord.js');
+const express = require('express')
+const bodyParser = require('body-parser')
+const client = new discord.Client();
+const app = express();
 
-var photoContestChannel = '742420136488599653'
-var suggestionChannel = '565445147324579851'
+const token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
+const pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
+const prefix = "!"
+
+const photoContestChannel = '742420136488599653'
+const suggestionChannel = '565445147324579851'
+
 var streamlinedGuild
 var suggestionRules
 
 client.login(token)
+
+// mysql database
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.get("/", (req, res) => {
+  res.json({ message: "Hi" });
+});
+require("./routes/player.routes.js")(app);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log('Server is running on port ${PORT}.')
+});
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
