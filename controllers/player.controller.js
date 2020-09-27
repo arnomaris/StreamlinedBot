@@ -2,10 +2,11 @@ const Player = require("../models/player.model.js");
 
 // Create and Save a new Player
 exports.create = (req, res) => {
-    if (!req.body) {
+    if (!req.body || !req.body.userid || !req.body.discordid || !req.body.active) {
         res.status(400).send({
-            message: "Content can not be empty!"
+            message: "Content can not be empty/missing argument!"
         });
+        return
     }
 
     // Create a Player
@@ -28,22 +29,14 @@ exports.create = (req, res) => {
 
 // Retrieve all Players from the database.
 exports.findAll = (req, res) => {
-    if (!req.body) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
-    }
-
-    exports.findAll = (req, res) => {
-        Player.getAll((err, data) => {
-            if (err)
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving players."
-                });
-            else res.send(data);
-        });
-    };
+    Player.getAll((err, data) => {
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving players."
+            });
+        else res.send(data);
+    });
 };
 
 // Find a single Player with a playerId
@@ -127,7 +120,7 @@ exports.deleteAll = (req, res) => {
             message: "Content can not be empty!"
         });
     }
-    
+
     Player.removeAll((err, data) => {
         if (err)
             res.status(500).send({

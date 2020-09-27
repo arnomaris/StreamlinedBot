@@ -14,7 +14,8 @@
     "express": "^4.17.1",
     "heroku": "^7.43.2",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "roblox-js": "^4.0.4"
   },
   "engines": {
     "node": "14.x"

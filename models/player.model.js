@@ -6,7 +6,7 @@ const Player = function (player) {
     this.active = player.active
 }
 
-Player.Create = (newPlayer, result) => {
+Player.create = (newPlayer, result) => {
     sql.query("INSERT INTO players SET ?", newPlayer, (err, res) => {
         if (err) {
             console.log(err);

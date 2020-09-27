@@ -1,6 +1,9 @@
-const discord = require('discord.js');
+const discord = require('discord.js')
+const roblox = require('roblox-js');
 const express = require('express')
 const bodyParser = require('body-parser')
+const nitroPlayers = require("./models/player.model.js")
+
 const client = new discord.Client();
 const app = express();
 
@@ -26,6 +29,13 @@ require("./routes/player.routes.js")(app);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('Server is running on port ${PORT}.')
+});
+
+nitroPlayers.getAll((err, data) => {
+    if (err)
+        console.error(err.message || "Some error occurred while retrieving players.")
+    else 
+        console.log(data)
 });
 
 client.on("ready", () => {
@@ -86,6 +96,44 @@ client.on('message', (message) => {
             generalChannel.send("I like cheese")
         };
     };
+    if(isCommand("bindnitro", message)){
+        if(hasRole(message.member, "Nitro Booster")){
+            var args = message.content.split(/[ ]+/)
+            if (args[1]){
+                roblox.getIdFromUsername(args[1])
+                    .then(id => {
+                        message.channel.send('I found this player, is this you? Reply with "yes" if this is you. Command will time out after 1 minute')
+                            .then(function(){
+                                var messageEmbed = new discord.MessageEmbed()
+                                    .setThumbnail('https://www.roblox.com/headshot-thumbnail/image?userId=' + id + '&width=110&height=110&format=png')
+                                    .setTitle(args[1])
+                                    .setURL('https://www.roblox.com/users/' + id + '/profile')
+                                    .addFields(
+                                        {name: 'Username', value: args[1], inline: true},
+                                        {name: 'UserId', value: id, inline: true},
+                                    )
+                                message.channel.send(messageEmbed)
+                                message.channel.awaitMessages(m => m.author.id == message.author.id, {max: 1, time: 60000, errors: ['time']})
+                                    .then(function(collected){
+                                        if (collected.first().content.toLowerCase() == 'yes') {
+                                            message.reply('binding your profile...')
+                                        } else {
+                                            message.reply(' successfully cancelled bind!')
+                                        }
+                                    })
+                                    .catch(() => {
+                                        message.reply("I didn't receive a confirmation after a minute! Please use !bindnitro again if you want to restart.")
+                                    })
+                            })
+                    })
+                    .catch(err =>{
+                        message.reply('Could not find ' + args[1] + 'on Roblox!')
+                    })
+            } else {
+                message.reply("You forgot to include your username!")
+            }
+        }
+    }
 });
 
 
