@@ -79,8 +79,8 @@ client.on('message', (message) => {
         }
     }
 });
-
-function getReactionCount(channel, user){
+  
+function getAmountOfReactions(channel, user) {
     let count = 0
     channel.messages.cache.forEach(message => {
         let users = message.reactions.cache.first(1)[0].users.cache
@@ -89,16 +89,6 @@ function getReactionCount(channel, user){
         }
     })
     return count
-}
-  
-async function getAmountOfReactions(channel, user) {
-    try {
-        let count = await getReactionCount(channel, user)
-        return count
-    } catch (error) {
-        console.log(error);
-        throw error 
-    }
 }
 
 client.on('messageReactionAdd', (messageReaction, user) => {
@@ -116,15 +106,15 @@ client.on('messageReactionAdd', (messageReaction, user) => {
         }
     }
     if (messageReaction.message.channel.id == photoContestChannel){
-        let channel = client.channels.cache.get(photoContestChannel)
-        getAmountOfReactions(channel, user).then(count => {
-            console.log(count)
+        try {
+            let channel = client.channels.cache.get(photoContestChannel)
+            count = getAmountOfReactions(channel, user)
             if (count > 1){
                 messageReaction.users.remove(user.id);
             }
-        }).catch(err => {
-           console.log(err)
-        });
+        } catch (error) {
+            console.error('Failed to handle vote!');
+        }
     }
 });
 
