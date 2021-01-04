@@ -70,7 +70,7 @@ client.on('message', (message) => {
             .then(message.react('👎'))
             .catch(console.error)
     } else if (message.channel.id == photoContestChannel){
-        //if(!isAdmin(message) && !hasRole(message.member, "Event Manager")){
+        if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
             if (message.content == ""){
                 let count = 0
                 message.channel.messages.cache.forEach(m =>{
@@ -86,7 +86,7 @@ client.on('message', (message) => {
                 message.delete()
                 sendErrorReply(message, "Woops looks like you added a caption to your submission!")
             }
-        //}
+        }
     }
     if(isCommand("cheese", message)){
         if(isAdmin(message)){
