@@ -1,12 +1,13 @@
-var discord = require('discord.js');
-var client = new discord.Client();
+const  {Client} = require('discord.js');;
+const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
 var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
 var prefix = "!"
 
-var photoContestChannel = '742420136488599653'
+var photoContestChannelId = '742420136488599653'
 var suggestionChannel = '565445147324579851'
 var streamlinedGuild
+var photoContestChannel
 var suggestionRules
 
 const messageAnswers = {
@@ -21,8 +22,8 @@ const messageAnswers = {
 const funnyMessages = {
     'game': ["Good boy play Streamlined now!", "You shall play streamlined!", "Hmmm... are you sure you want to play Streamlined?", "Cheeselined", "Lets play fetch with doggo cows!", "Streamlined time!", "Lets a play Streamlined!", "Streamlined, yes yes **yes**"],
     'roadmap': ["🔮*Gazes in future*🔮 this is what Streamlined will look like in 2030!", "I came from the future, I know what Streamlined is going to look like! *Shhh don't tell anyone*", "This game is gonna look hella lit", "OOooo shiny pretty things are going to come!"],
-    'wiki': ["Gain knowledge my young one!", "BRAINNNNNNN KNOWLEDGE", "It's like Streamlined but only the info!", "Some awsome people made this", "From the comunity for the comunity"],
-    'discord': ["Let's get this* party started!", "Invite all your friends and extend family!", "Who are you going to invite? *he better be nice*", "Invite them **all**"],
+    'wiki': ["Gain knowledge my young one!", "BRAINNNNNNN KNOWLEDGE", "It's like Streamlined but only the info!", "Some awsome people made this", "For the community by the community"],
+    'discord': ["Let's get this party started!", "Invite all your friends and extended family!", "Who are you going to invite? *he better be nice*", "Invite them **all**"],
     'changelog': ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Aswome updates of an aswome game!"],
     'OST': ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"]
 }
@@ -43,8 +44,8 @@ client.on("ready", () => {
     suggestionRules.messages.fetch("756132113421566125")
         .then(message => console.log("Got suggestion rules message!"))
         .catch(console.error);
-
-    client.channels.cache.get(photoContestChannel).messages.fetch()
+    photoContestChannel = client.channels.cache.get(photoContestChannelId)
+    photoContestChannel.messages.fetch()
 });
 
 function pluck(array){
@@ -91,7 +92,7 @@ client.on('message', (message) => {
         message.react('👍')
             .then(message.react('👎'))
             .catch(console.error)
-    } else if (message.channel.id == photoContestChannel){
+    } else if (message.channel.id == photoContestChannelId){
         if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
             if (message.content == ""){
                 let count = 0
@@ -118,8 +119,7 @@ client.on('message', (message) => {
     } else if (isCommand("openvoting", message)) {
         if(isAdmin(message) || hasRole(message.member, "Event Manager")){
             try{
-                let channel = client.channels.cache.get(photoContestChannel)
-                channel.messages.cache.forEach(message => {
+                photoContestChannel.messages.cache.forEach(message => {
                     message.react('👍')
                 })
             } catch (error) {
@@ -137,19 +137,28 @@ client.on('message', (message) => {
 function getAmountOfReactions(channel, user) {
     return new Promise(resolve => {
         channel.messages.fetch().then(messages => {
-            let count = 0
-            messages.forEach(message => {
-                    let users = message.reactions.cache.first(1)[0].users.cache
-                    if(users.has(user.id)){
-                        count += 1
-                    }
-            })
+            let count = messages.reduce(async (accumulatorP, message) => {
+                let accumulator = await accumulatorP
+                let users = await message.reactions.cache.first(1)[0].users.fetch()
+                if(users.has(user.id)){
+                    accumulator += 1
+                }
+                return accumulator
+            }, Promise.resolve(0))
             resolve(count)
         })
     })
 }
 
-client.on('messageReactionAdd', (messageReaction, user) => {
+client.on('messageReactionAdd', async (messageReaction, user) => {
+	if (messageReaction.partial) {
+        try {
+			await messageReaction.fetch();
+		} catch (error) {
+			console.error('Something went wrong when fetching the message: ', error);
+			return;
+		}
+    }
     if(user.bot) return; // If the user who reacted is a bot, return
     if (messageReaction.message.id === "756132113421566125"){
         const member = streamlinedGuild.members.cache.get(user.id)
@@ -163,10 +172,9 @@ client.on('messageReactionAdd', (messageReaction, user) => {
             }
         }
     }
-    if (messageReaction.message.channel.id == photoContestChannel){
+    if (messageReaction.message.channel.id == photoContestChannelId){
         try {
-            let channel = client.channels.cache.get(photoContestChannel)
-            getAmountOfReactions(channel, user)
+            getAmountOfReactions(photoContestChannel, user)
             .then(count => {
                 if (count > 1){
                     messageReaction.users.remove(user.id);
