@@ -139,9 +139,11 @@ function getAmountOfReactions(channel, user) {
         channel.messages.fetch().then(messages => {
             let count = messages.reduce(async (accumulatorP, message) => {
                 let accumulator = await accumulatorP
-                let users = await message.reactions.cache.first(1)[0].users.fetch()
-                if(users.has(user.id)){
-                    accumulator += 1
+                if (message.reactions.cache.first(1)[0]){
+                    let users = await message.reactions.cache.first(1)[0].users.fetch()
+                    if(users.has(user.id)){
+                        accumulator += 1
+                    }
                 }
                 return accumulator
             }, Promise.resolve(0))
@@ -173,17 +175,22 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
         }
     }
     if (messageReaction.message.channel.id == photoContestChannelId){
-        try {
-            getAmountOfReactions(photoContestChannel, user)
-            .then(count => {
-                if (count > 1){
-                    messageReaction.users.remove(user.id);
-                }
-            })
-        } catch (error) {
-            messageReaction.users.remove(user.id);
-            console.error('Failed to handle vote!');
-        }
+        //try {
+            if (messageReaction.message.author.id == user.id){
+                messageReaction.users.remove(user.id);
+            } else {
+                getAmountOfReactions(photoContestChannel, user)
+                .then(count => {
+                    if (count > 1){
+                        messageReaction.users.remove(user.id);
+                    }
+                })
+            }
+           
+        //} catch (error) {
+            //messageReaction.users.remove(user.id);
+            //console.error('Failed to handle vote!');
+        //}
     }
 });
 
