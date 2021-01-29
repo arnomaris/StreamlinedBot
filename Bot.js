@@ -16,7 +16,7 @@ const messageAnswers = {
     'wiki': '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
     'discord': 'http://discord.gg/streamlined',
     'changelog': '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
-    'OST': '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
+    'ost': '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
 }
 
 const funnyMessages = {
@@ -25,7 +25,7 @@ const funnyMessages = {
     'wiki': ["Gain knowledge my young one!", "BRAINNNNNNN KNOWLEDGE", "It's like Streamlined but only the info!", "Some awsome people made this", "For the community by the community"],
     'discord': ["Let's get this party started!", "Invite all your friends and extended family!", "Who are you going to invite? *he better be nice*", "Invite them **all**"],
     'changelog': ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Aswome updates of an aswome game!"],
-    'OST': ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"]
+    'ost': ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"]
 }
 
 client.login(token)
@@ -127,8 +127,8 @@ client.on('message', (message) => {
             }
         }
     }
-    if (messageAnswers[message.content.substring(1).replace(/ .*/,'')]){
-        var content = message.content.substring(1).replace(/ .*/,'')
+    if (message.content.startsWith("!") && messageAnswers[message.content.split('!')[1].toLowerCase()]){
+        var content = message.content.split('!')[1].toLowerCase()
         var fMes = funnyMessages[content]
         message.channel.send(fMes[random(fMes.length)] + "\n" + messageAnswers[content])
     }
