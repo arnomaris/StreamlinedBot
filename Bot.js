@@ -1,20 +1,23 @@
-const  {Client} = require('discord.js');;
+const Discord = require('discord.js');
+const {Client} = require('discord.js');
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
 var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
 var prefix = "!"
 
-var photoContestChannelId = '742420136488599653'
-var suggestionChannel = '565445147324579851'
+const photoContestChannelId = '742420136488599653'
+const suggestionChannel = '565445147324579851'
+const logChannelId = '424257845329002496'
 var streamlinedGuild
 var photoContestChannel
+var logChannel
 var suggestionRules
 
 const messageAnswers = {
     'game': '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
     'roadmap': '<https://trello.com/b/XRMAfup0/streamlined-road-map>',
     'wiki': '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
-    'discord': 'http://discord.gg/streamlined',
+    'discord': 'https://discord.gg/Wmeugg8',
     'changelog': '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
     'ost': '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
 }
@@ -46,6 +49,7 @@ client.on("ready", () => {
         .catch(console.error);
     photoContestChannel = client.channels.cache.get(photoContestChannelId)
     photoContestChannel.messages.fetch()
+    logChannel = client.channels.cache.get(logChannelId)
 });
 
 function pluck(array){
@@ -86,6 +90,18 @@ function sendErrorReply(message, replyMessage){
     })
 }
 
+function sendLog(violationType, user, reason) {
+
+    const exampleEmbed = new Discord.MessageEmbed()
+        .setColor('#FF470F')
+        .setTitle(violationType)
+        .setAuthor(user.tag, user.avatarURL())
+        .setDescription(reason)
+        .setTimestamp()
+        .setFooter("ID: " + user.id);
+    logChannel.send(exampleEmbed)
+}
+
 client.on('message', (message) => {
     if(message.author.bot) return; // If the user who reacted is a bot, return
     if (message.channel.id == suggestionChannel){
@@ -93,7 +109,7 @@ client.on('message', (message) => {
             .then(message.react('👎'))
             .catch(console.error)
     } else if (message.channel.id == photoContestChannelId){
-        if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
+        //if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
             if (message.content == ""){
                 let count = 0
                 message.channel.messages.cache.forEach(m =>{
@@ -104,12 +120,14 @@ client.on('message', (message) => {
                 if (count > 1){
                     message.delete()
                     sendErrorReply(message, "Woops looks like you already posted a submission!")
+                    sendLog("Deleted photo contest submission", message.author, "Multiple submissions")
                 }
             } else {
                 message.delete()
                 sendErrorReply(message, "Woops looks like you added a caption to your submission!")
+                sendLog("Deleted photo contest submission", message.author, "Included caption")
             }
-        }
+        //}
     }
     if(isCommand("cheese", message)){
         if(isAdmin(message)){
