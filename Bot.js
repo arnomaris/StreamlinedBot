@@ -8,10 +8,12 @@ var prefix = "!"
 const photoContestChannelId = '742420136488599653'
 const suggestionChannel = '565445147324579851'
 const logChannelId = '424257845329002496'
+const micChannelId = '818139937344978974'
 var streamlinedGuild
 var photoContestChannel
 var logChannel
 var suggestionRules
+var micChannel
 
 const messageAnswers = {
     'game': '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
@@ -50,6 +52,7 @@ client.on("ready", () => {
     photoContestChannel = client.channels.cache.get(photoContestChannelId)
     photoContestChannel.messages.fetch()
     logChannel = client.channels.cache.get(logChannelId)
+    micChannel = client.channels.cache.get(micChannelId)
 });
 
 function pluck(array){
@@ -109,7 +112,7 @@ client.on('message', (message) => {
             .then(message.react('👎'))
             .catch(console.error)
     } else if (message.channel.id == photoContestChannelId){
-        //if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
+        if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")){
             if (message.content == ""){
                 let count = 0
                 message.channel.messages.cache.forEach(m =>{
@@ -127,7 +130,7 @@ client.on('message', (message) => {
                 sendErrorReply(message, "Woops looks like you added a caption to your submission!")
                 sendLog("Deleted photo contest submission", message.author, "Included caption")
             }
-        //}
+        }
     }
     if(isCommand("cheese", message)){
         if(isAdmin(message)){
@@ -218,4 +221,20 @@ client.on('messageReactionRemove', (messageReaction, user) => {
     }
 });
 
-client.guilds
+client.on('voiceStateUpdate', (_, newState) => {
+    console.log(newState.member.user)
+    if (newState.channelID){
+        micChannel.updateOverwrite(newState.member.user, {
+            VIEW_CHANNEL: true,
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true,
+            READ_MESSAGE_HISTORY: true,
+        })
+    } else if (!newState.channelID){
+        try {
+            micChannel.permissionOverwrites.get(newState.member.user.id).delete()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+})
