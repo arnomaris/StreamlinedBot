@@ -154,6 +154,19 @@ client.on('message', (message) => {
         message.channel.send(fMes[random(fMes.length)] + "\n" + messageAnswers[content])
     }
 });
+
+client.on('raw', packet => {
+    if (packet.t !== 'MESSAGE_UPDATE') return;
+    if (packet.d.channel_id == photoContestChannelId) {
+        photoContestChannel.messages.fetch(packet.d.id).then(message => {
+            if(!isAdmin(message) && !hasRole(message.member, "Event Manager") && !hasRole(message.member, "Moderator")) {
+                message.delete()
+                sendErrorReply(message, "Woops editing your messages is not allowed!")
+                sendLog("Deleted photo contest submission", message.author, "Edited message")
+            }
+        })
+    }
+});
   
 function getAmountOfReactions(channel, user) {
     return new Promise(resolve => {
@@ -222,7 +235,6 @@ client.on('messageReactionRemove', (messageReaction, user) => {
 });
 
 client.on('voiceStateUpdate', (_, newState) => {
-    console.log(newState.member.user)
     if (newState.channelID){
         micChannel.updateOverwrite(newState.member.user, {
             VIEW_CHANNEL: true,
