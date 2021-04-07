@@ -2,7 +2,7 @@ module.exports = app => {
     const players = require("../controllers/player.controller.js");
   
     // Create a new player
-    app.post("/players", players.create);
+    //app.post("/players", players.create);
   
     // Retrieve all player
     app.get("/players", players.findAll);
@@ -14,7 +14,7 @@ module.exports = app => {
     app.put("/players/:playerId", players.update);
   
     // Delete a player with customerId
-    app.delete("/players/:playerId", players.delete);
+    //app.delete("/players/:playerId", players.delete);
   
     // Create a new player
     //app.delete("/players", players.deleteAll);

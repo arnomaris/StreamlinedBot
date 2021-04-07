@@ -1,4 +1,5 @@
 const Player = require("../models/player.model.js");
+const verificationId = 'QKTsqu9xTdG-8FA^L4Jfn=n#n_AKv2?xp8GGqW+P*J7CEACb!g'
 
 // Create and Save a new Player
 exports.create = (req, res) => {
@@ -71,23 +72,29 @@ exports.update = (req, res) => {
         });
     }
 
-    Player.updateById(
-        req.params.playerId,
-        new Player(req.body),
-        (err, data) => {
-            if (err) {
-                if (err.kind === "not_found") {
-                    res.status(404).send({
-                        message: `Not found player with id ${req.params.playerId}.`
-                    });
-                } else {
-                    res.status(500).send({
-                        message: "Error updating player with id " + req.params.playerId
-                    });
-                }
-            } else res.send(data);
-        }
-    );
+    if (req.params.verification == verificationId){
+        Player.updateById(
+            req.params.playerId,
+            new Player(req.body),
+            (err, data) => {
+                if (err) {
+                    if (err.kind === "not_found") {
+                        res.status(404).send({
+                            message: `Not found player with id ${req.params.playerId}.`
+                        });
+                    } else {
+                        res.status(500).send({
+                            message: "Error updating player with id " + req.params.playerId
+                        });
+                    }
+                } else res.send(data);
+            }
+        );
+    } else {
+        res.status(403).send({
+            message: "Forbidden"
+        })
+    }
 };
 
 // Delete a Player with the specified playerId in the request
