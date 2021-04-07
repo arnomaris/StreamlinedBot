@@ -1,5 +1,3 @@
-
-const roblox = require('roblox-js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const nitroPlayers = require("./models/player.model.js")
@@ -163,8 +161,8 @@ client.on('message', (message) => {
             const generalChannel = client.channels.cache.find(channel => channel.name === "general")
             generalChannel.send("I like cheese")
         };
-    };
-    if(isCommand("bindnitro", message)){
+    }
+    /*if(isCommand("bindnitro", message)){
         if(hasRole(message.member, "Nitro Booster")){
             var args = message.content.split(/[ ]+/)
             if (args[1]){
@@ -200,8 +198,8 @@ client.on('message', (message) => {
             } else {
                 message.reply("You forgot to include your username!")
             }
-        }
-    } else if (isCommand("openvoting", message)) {
+        }*/
+    else if (isCommand("openvoting", message)) {
         if(isAdmin(message) || hasRole(message.member, "Event Manager")){
             try{
                 photoContestChannel.messages.cache.forEach(message => {
