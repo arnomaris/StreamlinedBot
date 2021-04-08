@@ -171,7 +171,7 @@ client.on('message', (message) => {
                 console.error(error);
             }
         }
-    } else if (isCommand("test", message)) {
+    } else if (isCommand("getnitrostatus", message)) {
         if (isAdmin(message) || message.channel.id == botChannelId || message.channel.id == nitroboosterChannelId || message.channel.id == '617775403616043017' || message.channel.id == '424257833593208843') {
             try {
                 getMember(message).then((member) => {
