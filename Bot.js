@@ -57,6 +57,11 @@ client.on("ready", () => {
     micChannel = client.channels.cache.get(micChannelId)
 });
 
+process.on('unhandledRejection', error => {
+    // Will print "unhandledRejection err is not defined"
+    console.log('unhandledRejection', error.message);
+});
+
 function pluck(array){
     return array.map(function(item) { return item['name']; })
 }
@@ -107,12 +112,17 @@ function sendLog(violationType, user, reason) {
 }
 
 function getMember(message) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         let arg = message.content.split(/[ ]+/)[1]
         if (!arg) {
             resolve(message.member)
         } else if (!isNaN(arg)) {
-            streamlinedGuild.members.fetch(arg.replace(/[\\<>@#&!]/g, "")).then(member => {resolve(member)})
+            streamlinedGuild.members.fetch(arg)
+                .then(member => resolve(member))
+                .catch(error => {
+                    resolve(undefined) 
+                    console.error(error)
+                })
         } else {
             resolve(streamlinedGuild.members.cache.get(arg.replace(/[\\<>@#&!]/g, "")))
         }
@@ -161,11 +171,13 @@ client.on('message', (message) => {
                 console.error(error);
             }
         }
-    } else if (isCommand("getnitrostatus", message)) {
+    } else if (isCommand("test", message)) {
         if (isAdmin(message) || message.channel.id == botChannelId || message.channel.id == nitroboosterChannelId || message.channel.id == '617775403616043017' || message.channel.id == '424257833593208843') {
             try {
                 getMember(message).then((member) => {
-                    if (member.premiumSince) {
+                    if (!member) {
+                        message.channel.send("That is not a valid member!")
+                    } else if (member.premiumSince) {
                         message.channel.send(member.displayName + " has been boosting since `" + member.premiumSince.toLocaleDateString("nl-NL") + "`")
                     } else {
                         message.channel.send(member.displayName + " is not a booster <:doggosad:610744652781322251>")
