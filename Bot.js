@@ -9,6 +9,8 @@ const photoContestChannelId = '742420136488599653'
 const suggestionChannel = '565445147324579851'
 const logChannelId = '424257845329002496'
 const micChannelId = '818139937344978974'
+const botChannelId = '424257859677585430'
+const nitroboosterChannelId = '585721926186565633'
 var streamlinedGuild
 var photoContestChannel
 var logChannel
@@ -94,7 +96,6 @@ function sendErrorReply(message, replyMessage){
 }
 
 function sendLog(violationType, user, reason) {
-
     const exampleEmbed = new Discord.MessageEmbed()
         .setColor('#FF470F')
         .setTitle(violationType)
@@ -103,6 +104,19 @@ function sendLog(violationType, user, reason) {
         .setTimestamp()
         .setFooter("ID: " + user.id);
     logChannel.send(exampleEmbed)
+}
+
+function getMember(message) {
+    return new Promise(resolve => {
+        let arg = message.content.split(/[ ]+/)[1]
+        if (!arg) {
+            resolve(message.member)
+        } else if (!isNaN(arg)) {
+            streamlinedGuild.members.fetch(arg.replace(/[\\<>@#&!]/g, "")).then(member => {resolve(member)})
+        } else {
+            resolve(streamlinedGuild.members.cache.get(arg.replace(/[\\<>@#&!]/g, "")))
+        }
+    })
 }
 
 client.on('message', (message) => {
@@ -145,6 +159,20 @@ client.on('message', (message) => {
                 })
             } catch (error) {
                 console.error(error);
+            }
+        }
+    } else if (isCommand("getnitrostatus", message)) {
+        if (isAdmin(message) || message.channel.id == botChannelId || message.channel.id == nitroboosterChannelId || message.channel.id == '617775403616043017' || message.channel.id == '424257833593208843') {
+            try {
+                getMember(message).then((member) => {
+                    if (member.premiumSince) {
+                        message.channel.send(member.displayName + " has been boosting since `" + member.premiumSince.toLocaleDateString("nl-NL") + "`")
+                    } else {
+                        message.channel.send(member.displayName + " is not a booster <:doggosad:610744652781322251>")
+                    }
+                })
+            } catch(error) {
+                message.channel.send("Failed to run command!")
             }
         }
     }
