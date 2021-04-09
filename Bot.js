@@ -1,9 +1,12 @@
 const Discord = require('discord.js');
 const {Client} = require('discord.js');
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
-var token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
-var pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
-var prefix = "!"
+
+const dataHandler = require('./database/dataHandler.js')
+
+let token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
+let pastebintoken = "b85a1fde3f69f6c3f7353c234e13f666"
+let prefix = "!"
 
 const photoContestChannelId = '742420136488599653'
 const suggestionChannel = '565445147324579851'
@@ -11,11 +14,11 @@ const logChannelId = '424257845329002496'
 const micChannelId = '818139937344978974'
 const botChannelId = '424257859677585430'
 const nitroboosterChannelId = '585721926186565633'
-var streamlinedGuild
-var photoContestChannel
-var logChannel
-var suggestionRules
-var micChannel
+let streamlinedGuild
+let photoContestChannel
+let logChannel
+let suggestionRules
+let micChannel
 
 const messageAnswers = {
     'game': '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
@@ -27,11 +30,11 @@ const messageAnswers = {
 }
 
 const funnyMessages = {
-    'game': ["Good boy play Streamlined now!", "You shall play streamlined!", "Hmmm... are you sure you want to play Streamlined?", "Cheeselined", "Lets play fetch with doggo cows!", "Streamlined time!", "Lets a play Streamlined!", "Streamlined, yes yes **yes**"],
+    'game': ["Good boy play Streamlined now!", "You shall play streamlined!", "Hmmm... are you sure you want to play Streamlined?", "Cheeselined", "Lets play fetch with doggo cows!", "Streamlined time!", "Lets a play Streamlined!", "Streamlined, yes *yes* **yes**"],
     'roadmap': ["🔮*Gazes in future*🔮 this is what Streamlined will look like in 2030!", "I came from the future, I know what Streamlined is going to look like! *Shhh don't tell anyone*", "This game is gonna look hella lit", "OOooo shiny pretty things are going to come!"],
     'wiki': ["Gain knowledge my young one!", "BRAINNNNNNN KNOWLEDGE", "It's like Streamlined but only the info!", "Some awsome people made this", "For the community by the community"],
     'discord': ["Let's get this party started!", "Invite all your friends and extended family!", "Who are you going to invite? *he better be nice*", "Invite them **all**"],
-    'changelog': ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Aswome updates of an aswome game!"],
+    'changelog': ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Awesome updates of an awesome game!"],
     'ost': ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"]
 }
 
@@ -58,7 +61,6 @@ client.on("ready", () => {
 });
 
 process.on('unhandledRejection', error => {
-    // Will print "unhandledRejection err is not defined"
     console.log('unhandledRejection', error.message);
 });
 
@@ -87,7 +89,7 @@ function isAdmin(message){
 }
 
 function isCommand(command, message){
-	var command = command.toLowerCase();
+	command = command.toLowerCase();
 	const content = message.content.toLowerCase();
 	return content.startsWith(prefix + command);
 }
@@ -188,9 +190,9 @@ client.on('message', (message) => {
             }
         }
     }
-    if (message.content.startsWith("!") && messageAnswers[message.content.split('!')[1].toLowerCase()]){
-        var content = message.content.split('!')[1].toLowerCase()
-        var fMes = funnyMessages[content]
+    if (message.content.startsWith(prefix) && messageAnswers[message.content.split(prefix)[1].toLowerCase()]){
+        let content = message.content.split(prefix)[1].toLowerCase()
+        let fMes = funnyMessages[content]
         message.channel.send(fMes[random(fMes.length)] + "\n" + messageAnswers[content])
     }
 });
@@ -249,22 +251,16 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
         }
     }
     if (messageReaction.message.channel.id == photoContestChannelId){
-        //try {
-            if (messageReaction.message.author.id == user.id){
-                messageReaction.users.remove(user.id);
-            } else {
-                getAmountOfReactions(photoContestChannel, user)
-                .then(count => {
-                    if (count > 1){
-                        messageReaction.users.remove(user.id);
-                    }
-                })
-            }
-           
-        //} catch (error) {
-            //messageReaction.users.remove(user.id);
-            //console.error('Failed to handle vote!');
-        //}
+        if (messageReaction.message.author.id == user.id){
+            messageReaction.users.remove(user.id);
+        } else {
+            getAmountOfReactions(photoContestChannel, user)
+            .then(count => {
+                if (count > 1){
+                    messageReaction.users.remove(user.id);
+                }
+            })
+        }
     }
 });
 
