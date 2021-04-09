@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
     "heroku": "^7.47.6",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7"
