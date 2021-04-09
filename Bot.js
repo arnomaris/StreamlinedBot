@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const {Client} = require('discord.js');
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
+const connection = require('./database/connection.js')
 const dataHandler = require('./database/dataHandler.js')
 
 let token = 'MzEyOTIxODY0MDA1NDg0NTQ1.WRb1Mg.r-X5e-sSSVuetD8k4ojIftbrGUM'
@@ -39,6 +40,8 @@ const funnyMessages = {
 }
 
 client.login(token)
+
+connection.connect()
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
