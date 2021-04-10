@@ -10,4 +10,5 @@ module.exports = {
     trello: require('./infoMessage.js'),
     wichangelogki: require('./infoMessage.js'),
     ost: require('./infoMessage.js'),
+    ping: require('./ping.js')
 }
