@@ -1,6 +1,7 @@
 const clientHandler = require('./client.js')
 const commandUtil = require('./utility/commandUtil.js')
 const guilds = require('./guilds.js')
+const channels = require('./channels.js')
 
 clientHandler.client.on('messageReactionAdd', async (messageReaction, user) => {
 	if (messageReaction.partial) {
@@ -28,7 +29,7 @@ clientHandler.client.on('messageReactionAdd', async (messageReaction, user) => {
         if (messageReaction.message.author.id == user.id){
             messageReaction.users.remove(user.id)
         } else {
-            commandUtil.getAmountOfReactions(photoContestChannel, user)
+            commandUtil.getAmountOfReactions(channels.photoContest, user)
             .then(count => {
                 if (count > 1){
                     messageReaction.users.remove(user.id)
