@@ -1,3 +1,4 @@
+const clientHandler = require('./../client.js')
 const randomUtil = require('./../utility/randomUtil.js')
 
 const commands = {
@@ -12,7 +13,7 @@ const commands = {
 
 const messageAnswers = {
     game: '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
-    roadmap: '<https://trello.com/b/XRMAfup0/streamlined-road-map>',
+    roadmap: '<https://trello.com/b/XRMAfup0/streamlined-roadmap>',
     wiki: '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
     discord: 'https://discord.gg/Wmeugg8',
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
@@ -28,9 +29,21 @@ const funnyMessages = {
     ost: ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"]
 }
 
-module.exports = function(message) {
-    let content = message.content.split(process.env.PREFIX)[1].toLowerCase()
-    let command = commands[content]
-    let fMes = funnyMessages[command]
-    message.channel.send(fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[command])
+module.exports = function(message, isInteraction) {
+    if (isInteraction) {
+        let fMes = funnyMessages[message.data.name]
+        clientHandler.client.api.interactions(message.id, message.token).callback.post({
+            data: {
+                type: 4,
+                data: {
+                    content: fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[message.data.name]
+                }
+            }
+        })
+    } else {
+        let content = message.content.split(process.env.PREFIX)[1].toLowerCase()
+        let command = commands[content]
+        let fMes = funnyMessages[command]
+        message.lineReplyNoMention(fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[command])
+    }
 }

@@ -37,6 +37,10 @@ clientHandler.client.on('message', (message) => {
     }
 })
 
+clientHandler.client.ws.on('INTERACTION_CREATE', async interaction => {
+    commandHandler.handleCommand(interaction)
+});
+
 clientHandler.client.on('raw', packet => {
     if (packet.t !== 'MESSAGE_UPDATE') return
     if (packet.d.channel_id == process.env.photoContest) {

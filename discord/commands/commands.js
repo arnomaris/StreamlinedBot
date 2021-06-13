@@ -8,7 +8,7 @@ module.exports = {
     wiki: require('./infoMessage.js'),
     discord: require('./infoMessage.js'),
     trello: require('./infoMessage.js'),
-    wichangelogki: require('./infoMessage.js'),
+    changelog: require('./infoMessage.js'),
     ost: require('./infoMessage.js'),
     ping: require('./ping.js')
 }
