@@ -7,6 +7,7 @@ const guilds = require('./guilds.js')
 require('dotenv').config();
 
 exports.client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+require('discord-buttons')(module.exports.client)
 
 exports.login = function() {
     module.exports.client.login(process.env.DISCORD_TOKEN)

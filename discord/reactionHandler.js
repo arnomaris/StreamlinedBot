@@ -25,18 +25,6 @@ clientHandler.client.on('messageReactionAdd', async (messageReaction, user) => {
             }
         }
     }
-    if (messageReaction.message.channel.id == process.env.photoContest){
-        if (messageReaction.message.author.id == user.id){
-            messageReaction.users.remove(user.id)
-        } else {
-            commandUtil.getAmountOfReactions(channels.photoContest, user)
-            .then(count => {
-                if (count > 1){
-                    messageReaction.users.remove(user.id)
-                }
-            })
-        }
-    }
 })
 
 clientHandler.client.on('messageReactionRemove', (messageReaction, user) => {

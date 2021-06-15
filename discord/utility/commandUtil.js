@@ -28,7 +28,7 @@ exports.sendErrorReply = function (message, replyMessage){
 }
 
 exports.sendLog = function(violationType, user, reason) {
-    const exampleEmbed = new discord.MessageEmbed()
+    const embed = new discord.MessageEmbed()
         .setColor('#FF470F')
         .setTitle(violationType)
         .setAuthor(user.tag, user.avatarURL())
@@ -56,20 +56,20 @@ exports.getMember = function(message) {
     })
 }
 
-exports.getAmountOfReactions = function(channel, user) {
-    return new Promise(resolve => {
-        channel.messages.fetch().then(messages => {
-            let count = messages.reduce(async (accumulatorP, message) => {
-                let accumulator = await accumulatorP
-                if (message.reactions.cache.first(1)[0]){
-                    let users = await message.reactions.cache.first(1)[0].users.fetch()
-                    if(users.has(user.id)){
-                        accumulator += 1
-                    }
-                }
-                return accumulator
-            }, Promise.resolve(0))
-            resolve(count)
-        })
+exports.help = function(message, info) {
+    return new Promise((resolve, reject) => {
+        const embed = new discord.MessageEmbed()
+            .setColor('#000000')
+            .setTitle(`Command: ${info['command']}`)
+            .setDescription(`**Description:** ${info['description']}`)
+            .addFields(info['fields'])
+        message.lineReplyNoMention(embed)
+        resolve(true)
     })
+}
+
+exports.isImage = function(attachment) {
+    var url = attachment.url;
+    //True if this url is a png image.
+    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
 }

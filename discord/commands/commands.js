@@ -1,6 +1,7 @@
 module.exports = {
     cheese: require('./cheese.js'),
-    openvoting: require('./openvoting.js'),
+    photocontest: require('./photocontest.js'),
+    pc: require('./photocontest.js'),
     isbooster: require('./getnitrostatus.js'),
     getnitrostatus: require('./getnitrostatus.js'),
     game: require('./infoMessage.js'),
