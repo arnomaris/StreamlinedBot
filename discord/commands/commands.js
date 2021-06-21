@@ -11,5 +11,7 @@ module.exports = {
     trello: require('./infoMessage.js'),
     changelog: require('./infoMessage.js'),
     ost: require('./infoMessage.js'),
-    ping: require('./ping.js')
+    ping: require('./ping.js'),
+    play: require('./play.js'),
+    leave: require('./leave.js')
 }

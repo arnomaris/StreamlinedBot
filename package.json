@@ -9,10 +9,12 @@
   "author": "Drolerina",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.5.3",
     "discord-buttons": "^3.2.1",
     "discord-reply": "^0.1.2",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.3.0",
     "heroku": "^7.52.0",
     "mysql": "^2.18.1",
     "node-forge": "^0.10.0",

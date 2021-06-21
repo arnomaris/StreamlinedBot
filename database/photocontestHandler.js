@@ -54,6 +54,18 @@ exports.setMessage = function(id, messageid) {
     })
 }
 
+exports.deleteMessage = function(messageid) {
+    return new Promise((resolve, reject) => {
+        connection.database.query(`DELETE FROM photocontest WHERE messageid='${messageid}'`, function (err, result, fields) {
+            if (err) {
+                resolve(err) 
+            } else {
+                resolve(true)
+            }
+        })
+    })
+}
+
 exports.deleteEntry = function(id) {
     connection.database.query(`DELETE FROM photocontest WHERE id='${id}'`, function (err, result, fields) {
         if (err) {
@@ -62,6 +74,28 @@ exports.deleteEntry = function(id) {
     })
 }
 
+exports.getEntries = function() {
+    return new Promise((resolve, reject) => {
+        connection.database.query(`SELECT messageid, id FROM photocontest`, function (err, result, fields) {
+            if (err) {
+                resolve(undefined) 
+                console.log(err) 
+            }
+            if (result)
+                resolve(result)
+            else
+                resolve(null)
+        })
+    })
+}
+
+exports.clearEntries = function(id, messageid) {
+    connection.database.query(`DELETE FROM photocontest`, function (err, result, fields) {
+        if (err) {
+            console.log(err) 
+        }
+    })
+}
 
 exports.getVote = function(id) {
     return new Promise((resolve, reject) => {
@@ -78,6 +112,21 @@ exports.getVote = function(id) {
     })
 }
 
+exports.getVotes = function() {
+    return new Promise((resolve, reject) => {
+        connection.database.query(`SELECT messageid, id  FROM voted`, function (err, result, fields) {
+            if (err) {
+                resolve(undefined) 
+                console.log(err) 
+            }
+            if (result)
+                resolve(result)
+            else
+                resolve(null)
+        })
+    })
+}
+
 exports.updateVote = function(id, messageid) {
     connection.database.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}'`, function (err, result, fields) {
         if (err) {
@@ -88,6 +137,14 @@ exports.updateVote = function(id, messageid) {
 
 exports.setVote = function(id, messageid) {
     connection.database.query(`INSERT INTO voted VALUES(${id}, ${messageid})`, function (err, result, fields) {
+        if (err) {
+            console.log(err) 
+        }
+    })
+}
+
+exports.clearVotes = function(id, messageid) {
+    connection.database.query(`DELETE FROM voted`, function (err, result, fields) {
         if (err) {
             console.log(err) 
         }

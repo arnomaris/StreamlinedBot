@@ -35,7 +35,7 @@ exports.sendLog = function(violationType, user, reason) {
         .setDescription(reason)
         .setTimestamp()
         .setFooter('ID: ' + user.id)
-    channels.logChannel.send(exampleEmbed)
+    channels.logChannel.send(embed)
 }
 
 exports.getMember = function(message) {

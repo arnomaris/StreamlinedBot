@@ -13,7 +13,7 @@ exports.getSetting = function(key) {
 }
 
 exports.updateSetting = function(key, value) {
-    connection.database.query(`UPDATE settings SET value='${value}' WHERE stringKey='${key}"'`, function (err, result, fields) {
+    connection.database.query(`UPDATE settings SET value='${value}' WHERE stringKey='${key}'`, function (err, result, fields) {
         if (err) {
             console.log(err) 
         }
