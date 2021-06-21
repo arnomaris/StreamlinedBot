@@ -20,13 +20,13 @@ let photocontestOpen
 
 const helpInfo = {
     command: 'photocontest/pc',
-    description: 'commands used for the photocontest \n**Cooldown:** 3 seconds\n**Requirement:** Photo Contest role, use `!rank Photo Contest`',
+    description: 'commands used for the photocontest \n**Cooldown:** 3 seconds',
     fields: [
         {
             name: "Sub commands:", 
             value: `submit - submit your photocontest entry
             remove/delete - remove your photocontest entry
-            checkout - checkout your photocontest entry, bot sends a dm with your entry
+            checkout - check out your photocontest entry, bot sends a dm with your entry
         `},
     ]
 }
@@ -90,7 +90,7 @@ module.exports = async function(message) {
                         .setID("photo_vote")
                     let submission = await channels.photoContest.send("", {files: [message.attachments.first()], component: button})
                     photocontestHandler.setMessage(message.member.id, submission.id)
-                    await message.lineReplyNoMention('Your submission was successful, if you want to checkout your submission use `!photocontest checkout`')
+                    await message.lineReplyNoMention('Your submission was successful, if you want to check out your submission use `!photocontest checkout`')
                 }
             } else {
                 await message.lineReplyNoMention('This is not a valid image!')
@@ -141,7 +141,7 @@ module.exports = async function(message) {
                 let entry = await channels.photoContest.messages.fetch(entryId)
                 if (entry) {
                     let dm = await message.member.createDM()
-                    dm.send('Your recent entry:', {files: [entry.attachments.first()]}).catch(() => message.lineReplyNoMention('Your DMs are closed, open them if you want to checkout your entry!'))
+                    dm.send('Your recent entry:', {files: [entry.attachments.first()]}).catch(() => message.lineReplyNoMention('Your DMs are closed, open them if you want to check out your entry!'))
                 } else {
                     message.lineReplyNoMention('Failed to find entry!')
                 }

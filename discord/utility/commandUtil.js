@@ -70,6 +70,5 @@ exports.help = function(message, info) {
 
 exports.isImage = function(attachment) {
     var url = attachment.url;
-    //True if this url is a png image.
-    return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
+    return url.endsWith('png') || url.endsWith('jpeg') || url.endsWith('jpg')
 }
