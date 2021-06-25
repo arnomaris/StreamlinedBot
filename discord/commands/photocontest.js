@@ -24,9 +24,10 @@ const helpInfo = {
     fields: [
         {
             name: "Sub commands:", 
-            value: `submit - submit your photocontest entry
+            value: `submit - submit your photocontest entry, include your photo when you use this command!
             remove/delete - remove your photocontest entry
             checkout - check out your photocontest entry, bot sends a dm with your entry
+            voted - check for which photo you voted, bot sends a dm with a link to your vote
         `},
     ]
 }
@@ -78,7 +79,7 @@ module.exports = async function(message) {
         if (isOnCooldown(message)) return
         if (message.attachments.size) {
             if (message.attachments.size > 1) {
-                await message.lineReplyNoMention('You submited multiple images, please only include one!')
+                await message.lineReplyNoMention('You submited miliple images, please only include one!')
             } else if (commandUtil.isImage(message.attachments.first())) {
                 if (await photocontestHandler.getMessage(message.member.id)) {
                     await message.lineReplyNoMention('You already submited an entry, use `!photocontest remove` first if you want to change your entry!')
@@ -93,7 +94,7 @@ module.exports = async function(message) {
                     await message.lineReplyNoMention('Your submission was successful, if you want to check out your submission use `!photocontest checkout`')
                 }
             } else {
-                await message.lineReplyNoMention('This is not a valid image!')
+                await message.lineReplyNoMention('This is not a valid image! The supported file types are: png, jpg, jpeg')
             }
         } else {
             await message.lineReplyNoMention('I could not find an image, please include your entry!')
@@ -150,6 +151,24 @@ module.exports = async function(message) {
             }
         } else {
             message.lineReplyNoMention('I was not able to find any entries from you, you can submit one using `!photocontest submit`')
+        }
+    } else if (command == 'voted') {
+        if (isOnCooldown(message)) return
+        let voteId = await photocontestHandler.getVote(message.member.id)
+        if (voteId) {
+            try {
+                let entry = await channels.photoContest.messages.fetch(voteId)
+                if (entry) {
+                    let dm = await message.member.createDM()
+                    dm.send(`You voted for this picture: ${entry.url}`).catch(() => message.lineReplyNoMention('Your DMs are closed, open them if you want to know who you voted for!'))
+                } else {
+                    message.lineReplyNoMention('Failed to find entry!')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            message.lineReplyNoMention('You haven\'t voted yet!')
         }
     } else if (command == 'getvotes' || command == 'votes') {
         if (isOnCooldown(message)) return
@@ -220,6 +239,22 @@ module.exports = async function(message) {
         votingOpen = true
         channels.photoContest.updateOverwrite(guilds.streamlinedGuild.roles.cache.find(r => r.name == 'Verified'), {['VIEW_CHANNEL']: true})
         message.lineReplyNoMention('Voting is now open!')
+    } else if (command == 'getmember' || command == 'getuser') {
+        if (args[2]) {
+            let memberId = await photocontestHandler.getEntry(args[2])
+            if (memberId) {
+                let member = clientHandler.client.users.cache.get(memberId)
+                if (member) {
+                    message.lineReplyNoMention(`The user that entered this photo is: <@${memberId}>`)
+                } else {
+                    message.lineReplyNoMention('I was not able to find the user of this message!')
+                }
+            } else {
+                message.lineReplyNoMention('This is not a valid message id!')
+            }
+        } else {
+            message.lineReplyNoMention('Please provide a message id of an entry.')
+        }
     } else {
         await commandUtil.help(message, helpInfo)
     }
