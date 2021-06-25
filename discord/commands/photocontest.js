@@ -39,7 +39,7 @@ permissionManager.configure('pc', {
     },
     permissions: {
         '0': {channels: {'botcommands': true}},
-        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true}},
+        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true, 'voted': true}},
         '2': {}
     },
     notification: 'Please use `!rank Photo Contest` to join the photo contest'
@@ -175,8 +175,9 @@ module.exports = async function(message) {
         let votes = await photocontestHandler.getVotes()
         let messages = await photocontestHandler.getEntries()
         let entries = {}
-        messages.forEach(message => {
-            entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id)}
+        await messages.forEach(async(message) => {
+            let textMessage = await channels.photoContest.messages.fetch(message.messageid)
+            entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id), message: textMessage}
         })
         votes.forEach(vote => {
             if (entries[vote.messageid]) entries[vote.messageid].votes += 1
@@ -193,7 +194,7 @@ module.exports = async function(message) {
                     .setColor('#000000'))
                 currentEmbed = embeds[embeds.length - 1]
             }
-            currentEmbed.addField(entry.member.tag, `Votes: ${entry.votes}`)
+            currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
         }
         for (let i in embeds) {
             message.channel.send(embeds[i])

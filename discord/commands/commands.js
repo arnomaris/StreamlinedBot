@@ -13,5 +13,6 @@ module.exports = {
     ost: require('./infoMessage.js'),
     ping: require('./ping.js'),
     play: require('./play.js'),
-    leave: require('./leave.js')
+    leave: require('./leave.js'),
+    say: require('./say.js')
 }
