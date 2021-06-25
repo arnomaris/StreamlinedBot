@@ -15,7 +15,8 @@ const helpInfo = {
 }
 
 const validSongs = {
-    ost: true
+    ost: true,
+    christmas: true
 }
 
 let dispatcher
