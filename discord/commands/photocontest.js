@@ -39,7 +39,7 @@ permissionManager.configure('pc', {
     },
     permissions: {
         '0': {channels: {'botcommands': true}},
-        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true}},
+        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true, 'voted': true}},
         '2': {}
     },
     notification: 'Please use `!rank Photo Contest` to join the photo contest'
