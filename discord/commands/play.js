@@ -9,6 +9,7 @@ const helpInfo = {
     fields: [
         {name: "Sub commands:", 
         value: `ost - play the original ost
+        christmas - play the christmas ost
         `}
     ]
 }
