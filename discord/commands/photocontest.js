@@ -19,7 +19,7 @@ let warningMessageId
     photocontestOpen = await settingHandler.getSetting('photocontest') === 'true'
 })()
 
-const warningMessageContent = 'The photocontest is currently accepting submissions! Use `!pc submit` with your picture in #botcommands\nVoting is currently closed, wait until the announcement to vote!'
+const warningMessageContent = 'The photocontest is currently accepting submissions! Use `!pc submit` with your picture in <#424257859677585430>\nVoting is currently closed, wait until the announcement to vote!'
 
 const helpInfo = {
     command: 'photocontest/pc',
@@ -95,8 +95,10 @@ module.exports = async function(message) {
                     let submission = await channels.photoContest.send("", {files: [message.attachments.first()], component: button})
                     photocontestHandler.setMessage(message.member.id, submission.id)
                     await message.lineReplyNoMention('Your submission was successful, if you want to check out your submission use `!photocontest checkout`')
-                    let warningMessageOld = await channels.photoContest.messages.fetch(warningMessageId)
-                    warningMessageOld.delete()
+                    if (warningMessageId) {
+                        let warningMessageOld = await channels.photoContest.messages.fetch(warningMessageId)
+                        warningMessageOld.delete()
+                    }
                     let warningMessage = await channels.photoContest.send(warningMessageContent)
                     warningMessageId = warningMessage.id
                 }
