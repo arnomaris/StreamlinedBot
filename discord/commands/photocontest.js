@@ -13,10 +13,13 @@ const { MessageButton } = require('discord-buttons');
 const COOLDOWN = 3
 let votingOpen
 let photocontestOpen
+let warningMessageId
 (async () => {
     votingOpen = await settingHandler.getSetting('voting') === 'true'
     photocontestOpen = await settingHandler.getSetting('photocontest') === 'true'
 })()
+
+const warningMessageContent = 'The photocontest is currently accepting submissions! Use `!pc submit` with your picture in #botcommands\nVoting is currently closed, wait until the announcement to vote!'
 
 const helpInfo = {
     command: 'photocontest/pc',
@@ -92,6 +95,10 @@ module.exports = async function(message) {
                     let submission = await channels.photoContest.send("", {files: [message.attachments.first()], component: button})
                     photocontestHandler.setMessage(message.member.id, submission.id)
                     await message.lineReplyNoMention('Your submission was successful, if you want to check out your submission use `!photocontest checkout`')
+                    let warningMessageOld = await channels.photoContest.messages.fetch(warningMessageId)
+                    warningMessageOld.delete()
+                    let warningMessage = await channels.photoContest.send(warningMessageContent)
+                    warningMessageId = warningMessage.id
                 }
             } else {
                 await message.lineReplyNoMention('This is not a valid image! The supported file types are: png, jpg, jpeg')
@@ -207,16 +214,21 @@ module.exports = async function(message) {
                 if (answer.content.toLowerCase() == 'yes') {
                     photocontestHandler.clearEntries()
                     photocontestHandler.clearVotes()
-                    let messages = 1
-                    while(messages > 0) {
-                        messages = await channels.photoContest.bulkDelete(100)
+                    completeMessage = await answer.lineReplyNoMention('System reset complete, clearing #photocontest...')
+                    let amountOfMessages = 1
+                    while(amountOfMessages > 0) {
+                        try {
+                            let messages = await channels.photoContest.bulkDelete(100)
+                            amountOfMessages = messages.length
+                        } catch(error) {
+                            answer.lineReplyNoMention('I experienced an error while clearing #photocontest\n```\n'+ error + '\n```' )
+                        }
                     }
                     settingHandler.updateSetting('photocontest', false)
                     photocontestOpen = false
                     settingHandler.updateSetting('voting', false)
                     votingOpen = false
-                    channels.photoContest.updateOverwrite(guilds.streamlinedGuild.roles.cache.find(r => r.name == 'Verified'), {['VIEW_CHANNEL']: false})
-                    answer.lineReplyNoMention('Successfully cleared the photocontest, start a new one with `!photocontest start`')
+                    completeMessage.edit('Successfully cleared the photocontest, start a new one with `!photocontest start`')
                 } else {
                     answer.lineReplyNoMention('Canceled command')
                 }
@@ -225,7 +237,10 @@ module.exports = async function(message) {
     } else if (command == 'start' || command == 'open') {
         settingHandler.updateSetting('photocontest', true)
         photocontestOpen = true
+        let warningMessage = await channels.photoContest.send(warningMessageContent)
+        warningMessageId = warningMessage.id
         message.lineReplyNoMention('Photocontest is now open, let the ugly pictures come in :))')
+        channels.photoContest.updateOverwrite(guilds.streamlinedGuild.roles.cache.find(r => r.name == 'Verified'), {['VIEW_CHANNEL']: true})
     } else if (command == 'close' || command == 'end') {
         settingHandler.updateSetting('photocontest', false)
         photocontestOpen = false
@@ -233,13 +248,22 @@ module.exports = async function(message) {
         votingOpen = false
         channels.photoContest.updateOverwrite(guilds.streamlinedGuild.roles.cache.find(r => r.name == 'Verified'), {['VIEW_CHANNEL']: false})
         message.lineReplyNoMention('Submissions and voting are now closed!')
+        if (warningMessageId) {
+            let warningMessageOld = await channels.photoContest.messages.fetch(warningMessageId)
+            warningMessageOld.delete()
+            warningMessageId = null
+        }
     } else if (command == 'openvoting') {
         settingHandler.updateSetting('photocontest', false)
         photocontestOpen = false
         settingHandler.updateSetting('voting', true)
         votingOpen = true
-        channels.photoContest.updateOverwrite(guilds.streamlinedGuild.roles.cache.find(r => r.name == 'Verified'), {['VIEW_CHANNEL']: true})
         message.lineReplyNoMention('Voting is now open!')
+        if (warningMessageId) {
+            let warningMessageOld = await channels.photoContest.messages.fetch(warningMessageId)
+            warningMessageOld.delete()
+            warningMessageId = null
+        }
     } else if (command == 'getmember' || command == 'getuser') {
         if (args[2]) {
             let memberId = await photocontestHandler.getEntry(args[2])
