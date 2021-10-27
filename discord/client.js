@@ -10,6 +10,7 @@ exports.client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 require('discord-buttons')(module.exports.client)
 
 exports.login = function() {
+    console.log("Logging in")
     module.exports.client.login(process.env.DISCORD_TOKEN)
     
     module.exports.client.on("ready", () => {
@@ -56,10 +57,10 @@ exports.login = function() {
         channels.logChannel = module.exports.client.channels.cache.get(process.env.logChannel)
         channels.micChannel = module.exports.client.channels.cache.get(process.env.micChannel)
 
-        channels.suggestionRules.messages.fetch(process.env.suggestionRulesMessage)
-            .then(_ => console.log("Got suggestion rules message!"))
-            .catch(console.error)
-
+        //channels.suggestionRules.messages.fetch(process.env.suggestionRulesMessage)
+        //    .then(_ => console.log("Got suggestion rules message!"))
+        //   .catch(console.error)
+    
         channels.photoContest.messages.fetch(true, true)
     });
 }

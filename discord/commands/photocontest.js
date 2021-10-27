@@ -121,7 +121,7 @@ module.exports = async function(message) {
                 }
                 photocontestHandler.deleteMessage(args[2])
                 message.lineReplyNoMention('Successfully deleted this entry!')
-                commandUtil.sendLog('Removed entry', clientHandler.client.users.cache.get(userId), 'Did not follow photocontest rules')
+                commandUtil.sendLog('Removed entry', clientHandler.client.users.cache.get(userId), 'Did not follow photo contest rules')
             } catch (error) {
                 console.log(error)
                 message.lineReplyNoMention('An error occurred while deleting the message!')
@@ -209,7 +209,7 @@ module.exports = async function(message) {
             message.channel.send(embeds[i])
         }
     } else if (command == 'reset') {
-        message.channel.send("Are you sure you want to reset the photocontest? Reply with **yes**")
+        message.channel.send("Are you sure you want to reset the photo contest? Reply with **yes**")
         message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 60000, errors: ['time'] })
             .then(async(collection) => {
                 let answer = collection.first()
@@ -220,17 +220,18 @@ module.exports = async function(message) {
                     let amountOfMessages = 1
                     while(amountOfMessages > 0) {
                         try {
-                            let messages = await channels.photoContest.bulkDelete(100)
+                            let messages = await channels.photoContest.bulkDelete(100, true)
                             amountOfMessages = messages.length
                         } catch(error) {
                             answer.lineReplyNoMention('I experienced an error while clearing #photocontest\n```\n'+ error + '\n```' )
+                            break
                         }
                     }
                     settingHandler.updateSetting('photocontest', false)
                     photocontestOpen = false
                     settingHandler.updateSetting('voting', false)
                     votingOpen = false
-                    completeMessage.edit('Successfully cleared the photocontest, start a new one with `!photocontest start`')
+                    completeMessage.edit('Successfully cleared the photo contest, start a new one with `!photocontest start`')
                 } else {
                     answer.lineReplyNoMention('Canceled command')
                 }

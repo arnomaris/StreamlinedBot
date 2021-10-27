@@ -14,5 +14,7 @@ module.exports = {
     ping: require('./ping.js'),
     play: require('./play.js'),
     leave: require('./leave.js'),
-    say: require('./say.js')
+    say: require('./say.js'),
+    reset: require('./reset.js'),
+    restart: require('./reset.js'),
 }
