@@ -30,7 +30,7 @@ const helpInfo = {
             value: `submit - submit your photocontest entry, include your photo when you use this command!
             remove/delete - remove your photocontest entry
             checkout - check out your photocontest entry, bot sends a dm with your entry
-            voted - check for which photo you voted, bot sends a dm with a link to your vote
+            voted/checkvote - check for which photo you voted, bot sends a dm with a link to your vote
         `},
     ]
 }
@@ -42,7 +42,7 @@ permissionManager.configure('pc', {
     },
     permissions: {
         '0': {channels: {'botcommands': true}},
-        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true, 'voted': true}},
+        '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true, 'voted': true, 'checkvote': true}},
         '2': {}
     },
     notification: 'Please use `!rank Photo Contest` to join the photo contest'
@@ -65,6 +65,22 @@ function isOnCooldown(message) {
         return false
     }
 }
+
+function sort_object(obj) {
+    items = Object.keys(obj).map(function(key) {
+        return [key, obj[key]];
+    });
+    items.sort(function(first, second) {
+        return second[1].votes - first[1].votes;
+    });
+    sorted_obj={}
+    for(let [k, v] of Object.entries(items)) {
+        use_key = v[0]
+        use_value = v[1]
+        sorted_obj[use_key] = use_value
+    }
+    return(sorted_obj)
+} 
 
 module.exports = async function(message) {
     let args = message.content.split(/[ ]+/)
@@ -161,7 +177,7 @@ module.exports = async function(message) {
         } else {
             message.lineReplyNoMention('I was not able to find any entries from you, you can submit one using `!photocontest submit`')
         }
-    } else if (command == 'voted') {
+    } else if (command == 'voted' || command == 'checkvote') {
         if (isOnCooldown(message)) return
         let voteId = await photocontestHandler.getVote(message.member.id)
         if (voteId) {
@@ -191,6 +207,7 @@ module.exports = async function(message) {
         votes.forEach(vote => {
             if (entries[vote.messageid]) entries[vote.messageid].votes += 1
         })
+        entries = sort_object(entries)
         let embeds = []
         embeds.push(new discord.MessageEmbed()
             .setColor('#000000')
