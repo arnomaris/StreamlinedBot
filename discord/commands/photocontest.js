@@ -202,24 +202,25 @@ module.exports = async function(message) {
         let entries = {}
         await messages.forEach(async(message) => {
             let textMessage = await channels.photoContest.messages.fetch(message.messageid)
+                .catch(error => console.log(error))
             entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id), message: textMessage}
         })
         votes.forEach(vote => {
             if (entries[vote.messageid]) entries[vote.messageid].votes += 1
         })
-        entries = sort_object(entries)
+        sortedEntries = sort_object(entries)
         let embeds = []
         embeds.push(new discord.MessageEmbed()
             .setColor('#000000')
             .setTitle('Votes'))
-        for (let i in entries) {
-            entry = entries[i]
+        for (let i in sortedEntries) {
+            entry = sortedEntries[i]
             let currentEmbed = embeds[embeds.length - 1]
             if (currentEmbed.fields.length >= 25) {
                 embeds.push(new discord.MessageEmbed()
                     .setColor('#000000'))
                 currentEmbed = embeds[embeds.length - 1]
-            }
+        }
             currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
         }
         for (let i in embeds) {
