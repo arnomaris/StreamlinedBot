@@ -45,7 +45,7 @@ permissionManager.configure('pc', {
         '1': {channels: {'botcommands': true}, commands: {'submit': true, 'remove': true, 'checkout': true, 'delete': true, 'voted': true, 'checkvote': true}},
         '2': {}
     },
-    notification: 'Please use `!rank Photo Contest` to join the photo contest'
+    notification: 'Please use `/rank Photo Contest` to join the photo contest'
 })
 
 let cooldownManager = {}
@@ -202,7 +202,6 @@ module.exports = async function(message) {
         let entries = {}
         await messages.forEach(async(message) => {
             let textMessage = await channels.photoContest.messages.fetch(message.messageid)
-                .catch(error => console.log(error))
             entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id), message: textMessage}
         })
         votes.forEach(vote => {
@@ -220,7 +219,7 @@ module.exports = async function(message) {
                 embeds.push(new discord.MessageEmbed()
                     .setColor('#000000'))
                 currentEmbed = embeds[embeds.length - 1]
-        }
+            }
             currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
         }
         for (let i in embeds) {
