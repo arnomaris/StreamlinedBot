@@ -10,6 +10,10 @@ clientHandler.client.on('message', (message) => {
         message.react('👍')
             .then(message.react('👎'))
             .catch(console.error)
+    } else if (message.channel.name == 'creations'){
+        if (message.attachments.size || message.embeds.length) {
+            message.react('👍')
+        }
     }
 
     if (message.content.startsWith(process.env.PREFIX)){
