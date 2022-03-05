@@ -13,6 +13,8 @@ clientHandler.client.on('message', (message) => {
     } else if (message.channel.name == 'creations'){
         if (message.attachments.size || message.embeds.length) {
             message.react('👍')
+        } else {
+            message.delete()
         }
     }
 
