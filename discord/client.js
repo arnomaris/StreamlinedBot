@@ -16,7 +16,7 @@ exports.login = function() {
     module.exports.client.on("ready", () => {
         console.log(`Logged in as ${module.exports.client.user.tag}!`)
 
-        module.exports.client.api.applications(module.exports.client.user.id).commands.put({
+        /*module.exports.client.api.applications(module.exports.client.user.id).commands.put({
             data: [{
                 name: "game",
                 description: "Get the link to the game",
@@ -45,7 +45,7 @@ exports.login = function() {
                 name: "ping",
                 description: "Check Doggo Assistant's response time to Discord",
             },]
-        }).then(console.log)
+        }).then(console.log)*/
 
         module.exports.client.user.setActivity(" fetch with doggo cows")
             .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))

@@ -19,7 +19,7 @@ const messageAnswers = {
     discord: 'https://discord.gg/Wmeugg8',
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
     ost: '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
-    tutorial: '<https://devforum.roblox.com/t/streamlined-change-log/601247>'
+    tutorial: '<https://devforum.roblox.com/t/streamlined-tutorial/600185>'
 }
 
 const funnyMessages = {
