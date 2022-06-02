@@ -39,7 +39,7 @@ module.exports = function(message, isInteraction) {
             data: {
                 type: 4,
                 data: {
-                    content: fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[message.data.name]
+                    content: fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[commands[message.data.name]]
                 }
             }
         })
