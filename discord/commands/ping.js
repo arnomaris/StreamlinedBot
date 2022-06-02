@@ -18,7 +18,7 @@ module.exports = function(message, isInteraction) {
             })
         })
     } else {
-        message.lineReplyNoMention('Pinging...').then(m => {
+        message.reply({content: 'Pinging...', allowedMentions: { repliedUser: false }}).then(m => {
             m.edit(`🏓**Pong!**\n**Latency**\n${m.createdTimestamp - message.createdTimestamp}ms\n**API**\n${Math.round(clientHandler.client.ws.ping)}ms`)
         })
     }

@@ -6,9 +6,9 @@ module.exports = async function(message, isInteraction) {
         if (message.member.voice.channel && message.member.voice.channel.equals(clientHandler.client.voice.connections.first().channel)) {
             clientHandler.client.voice.connections.first().disconnect()
         } else {
-            message.lineReplyNoMention("You are not in the same voice channel as me!")
+            message.reply({content: "You are not in the same voice channel as me!", allowedMentions: { repliedUser: false }})
         }
     } else {
-        message.lineReplyNoMention("I am not in a voice channel!")
+        message.reply({content: "I am not in a voice channel!", allowedMentions: { repliedUser: false }})
     }
 }

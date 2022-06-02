@@ -63,7 +63,8 @@ exports.help = function(message, info) {
             .setTitle(`Command: ${info['command']}`)
             .setDescription(`**Description:** ${info['description']}`)
             .addFields(info['fields'])
-        message.lineReplyNoMention(embed)
+        message.reply({embeds: embed})
+            .catch(console.error)
         resolve(true)
     })
 }

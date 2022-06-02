@@ -23,7 +23,8 @@ exports.hasPermissions = function(message, command, subcommand) {
     }
     if (permissionTier == '0') {
         if (commandPermissions.notification) {
-            message.lineReplyNoMention(commandPermissions.notification)
+            message.reply({content: commandPermissions.notification, allowedMentions: { repliedUser: false }})
+                .catch(console.error)
         }
         return false
     }

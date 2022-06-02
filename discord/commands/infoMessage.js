@@ -47,6 +47,6 @@ module.exports = function(message, isInteraction) {
         let content = message.content.split(process.env.PREFIX)[1].toLowerCase()
         let command = commands[content]
         let fMes = funnyMessages[command]
-        message.lineReplyNoMention(fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[command])
+        message.reply({content: fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[command], allowedMentions: { repliedUser: false }})
     }
 }

@@ -5,15 +5,15 @@ module.exports = function(message) {
         try {
             commandUtil.getMember(message).then((member) => {
                 if (!member) {
-                    message.lineReplyNoMention("That is not a valid member!")
+                    message.reply({content: "That is not a valid member!", allowedMentions: { repliedUser: false }})
                 } else if (member.premiumSince) {
-                    message.lineReplyNoMention(member.displayName + " has been boosting since `" + member.premiumSince.toLocaleDateString("nl-NL") + "`")
+                    message.reply({content: member.displayName + " has been boosting since `" + member.premiumSince.toLocaleDateString("nl-NL") + "`", allowedMentions: { repliedUser: false }})
                 } else {
-                    message.lineReplyNoMention(member.displayName + " is not a booster <:doggosad:610744652781322251>")
+                    message.reply({content: member.displayName + " is not a booster <:doggosad:610744652781322251>", allowedMentions: { repliedUser: false }})
                 }
             })
         } catch(error) {
-            message.lineReplyNoMention("Failed to run command!")
+            message.reply("Failed to run command!")
         }
     }
 }

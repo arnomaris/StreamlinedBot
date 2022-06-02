@@ -15,7 +15,7 @@ permissionManager.configure('reset', {
 module.exports = async function(message) {
 	let args = message.content.split(/[ ]+/)
 	if (!permissionManager.hasPermissions(message, 'reset')) return
-	message.lineReplyNoMention("Restarting bot...")
+	message.reply("Restarting bot...")
 		.then(msg => clientHandler.client.destroy())
 		.then(() => clientHandler.client.login(process.env.DISCORD_TOKEN));
 }

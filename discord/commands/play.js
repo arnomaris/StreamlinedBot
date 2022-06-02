@@ -1,5 +1,6 @@
 const commandUtil = require('./../utility/commandUtil.js')
 const fs = require('fs');
+const { getVoiceConnection } = require('@discordjs/voice');
 
 const clientHandler = require('./../client.js')
 
@@ -30,10 +31,10 @@ module.exports = async function(message, isInteraction) {
                 dispatcher = connection.play(fs.createReadStream(`./files/music/${args[1]}.webm`), {volume: 1, type: 'webm/opus'})
                 dispatcher.on('finish', () => connection.disconnect())
             } else {
-                message.lineReplyNoMention("You need to join a voice channel first!")
+                message.reply({content: "You need to join a voice channel first!", allowedMentions: { repliedUser: false }})
             }
         } else {
-            message.lineReplyNoMention("I am already playing music!")
+            message.reply({content: "I am already playing music!", allowedMentions: { repliedUser: false }})
         }
     } else {
         await commandUtil.help(message, helpInfo)
