@@ -10,7 +10,6 @@ connection.connect()
 
 require('./discord/messageHandler.js')
 require('./discord/reactionHandler.js')
-require('./discord/voiceHandler.js')
 
 
 /*

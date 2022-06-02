@@ -58,7 +58,6 @@ exports.login = function() {
         channels.suggestionRules = module.exports.client.channels.cache.get(process.env.suggestionRules)
         channels.photoContest = module.exports.client.channels.cache.get(process.env.photoContest)
         channels.logChannel = module.exports.client.channels.cache.get(process.env.logChannel)
-        channels.micChannel = module.exports.client.channels.cache.get(process.env.micChannel)
 
         //channels.suggestionRules.messages.fetch(process.env.suggestionRulesMessage)
         //    .then(_ => console.log("Got suggestion rules message!"))
