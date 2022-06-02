@@ -34,7 +34,7 @@ const funnyMessages = {
 
 module.exports = function(message, isInteraction) {
     if (isInteraction) {
-        let fMes = funnyMessages[message.data.name]
+        let fMes = funnyMessages[commands[message.data.name]]
         clientHandler.client.api.interactions(message.id, message.token).callback.post({
             data: {
                 type: 4,
