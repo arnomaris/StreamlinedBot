@@ -37,8 +37,8 @@ const helpInfo = {
 
 permissionManager.configure('pc', {
     tiers: {
-        '1': ['Photo Contest', 'Moderator'],
-        '2': ['Event Manager', 'Lead Developer']
+        '1': ['Photo Contest'],
+        '2': ['Event Manager', 'Lead Developer', 'Moderator']
     },
     permissions: {
         '0': {channels: {'botcommands': true}},
@@ -136,7 +136,7 @@ module.exports = async function(message) {
                     entry.delete()
                 }
                 photocontestHandler.deleteMessage(args[2])
-                message.lineReplyNoMention('Successfully deleted this entry!')
+                message.lineReplyNoMention(`Successfully deleted the entry from <@${userId}>!`)
                 commandUtil.sendLog('Removed entry', clientHandler.client.users.cache.get(userId), 'Did not follow photo contest rules')
             } catch (error) {
                 console.log(error)
