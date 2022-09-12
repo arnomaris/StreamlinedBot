@@ -201,7 +201,7 @@ module.exports = async function(message) {
         let messages = await photocontestHandler.getEntries()
         let entries = {}
         await messages.forEach(async(message) => {
-            let textMessage = await channels.photoContest.messages.fetch(message.messageid)
+            let textMessage = await channels.photoContest.messages.fetch(message.messageid).catch(error => {})
             entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id), message: textMessage}
         })
         votes.forEach(vote => {
@@ -220,7 +220,11 @@ module.exports = async function(message) {
                     .setColor('#000000'))
                 currentEmbed = embeds[embeds.length - 1]
             }
-            currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
+            if (entry.message && entry.member) {
+                currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
+            } else {
+                currentEmbed.addField("Unvalid entry", `[Votes: ${entry.votes}]`)
+            }
         }
         for (let i in embeds) {
             message.channel.send(embeds[i])
