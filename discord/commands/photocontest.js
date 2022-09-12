@@ -198,32 +198,24 @@ module.exports = async function(message) {
     } else if (command == 'getvotes' || command == 'votes') {
         if (isOnCooldown(message)) return
         let votes = await photocontestHandler.getVotes()
-        let messages = await photocontestHandler.getEntries()
-        let entries = {}
-        await messages.forEach(async(message) => {
-            let textMessage = await channels.photoContest.messages.fetch(message.messageid).catch(error => {})
-            entries[message.messageid] = {votes: 0, member: clientHandler.client.users.cache.get(message.id), message: textMessage}
-        })
-        votes.forEach(vote => {
-            if (entries[vote.messageid]) entries[vote.messageid].votes += 1
-        })
-        sortedEntries = sort_object(entries)
         let embeds = []
         embeds.push(new discord.MessageEmbed()
             .setColor('#000000')
             .setTitle('Votes'))
-        for (let i in sortedEntries) {
-            entry = sortedEntries[i]
+        for (let i in votes) {
+            entry = votes[i]
+            let textMessage = await channels.photoContest.messages.fetch(entry.messageid).catch(error => {})
+            let member = clientHandler.client.users.cache.get(entry.id)
             let currentEmbed = embeds[embeds.length - 1]
             if (currentEmbed.fields.length >= 25) {
                 embeds.push(new discord.MessageEmbed()
                     .setColor('#000000'))
                 currentEmbed = embeds[embeds.length - 1]
             }
-            if (entry.message && entry.member) {
-                currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${entry.message.url})`)
+            if (textMessage && member) {
+                currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${textMessage.url})`)
             } else {
-                currentEmbed.addField("Unvalid entry", `[Votes: ${entry.votes}]`)
+                currentEmbed.addField("Invalid entry", `[Votes: ${entry.votes}]`)
             }
         }
         for (let i in embeds) {
