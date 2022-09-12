@@ -213,7 +213,7 @@ module.exports = async function(message) {
                 currentEmbed = embeds[embeds.length - 1]
             }
             if (textMessage && member) {
-                currentEmbed.addField(entry.member.tag, `[Votes: ${entry.votes}](${textMessage.url})`)
+                currentEmbed.addField(member.tag, `[Votes: ${entry.votes}](${textMessage.url})`)
             } else {
                 currentEmbed.addField("Invalid entry", `[Votes: ${entry.votes}]`)
             }
