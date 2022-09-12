@@ -116,7 +116,7 @@ exports.getVotes = function() {
     return new Promise((resolve, reject) => {
         connection.database.query(`
         SELECT p.messageid, p.id, COUNT(v.id) AS votes 
-        FROM voted AS v JOIN photocontest AS p ON v.messageid = p.messageID 
+        FROM voted AS v RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID 
         GROUP BY p.messageid 
         ORDER BY COUNT(v.id) DESC`, function (err, result, fields) {
             if (err) {
