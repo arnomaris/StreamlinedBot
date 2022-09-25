@@ -126,6 +126,10 @@ module.exports = async function(message) {
         }
         message.delete()
     } else if (command == 'remove' || command == 'delete') {
+        if (!photocontestOpen) {
+            await message.lineReplyNoMention(`The photo contest has been closed, you're not longer able to remove your submission!`)
+            return
+        }
         if (isOnCooldown(message)) return
         if (args[2] && permissionManager.hasRole(message.member, ['Event Manager', 'Lead Developer', 'Moderator'])) {
             let userId
