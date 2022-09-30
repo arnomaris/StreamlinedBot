@@ -4,7 +4,7 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const connection = require('./scr/database/connection.js')
 require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'scr/commands');
@@ -75,5 +75,25 @@ client.on('interactionCreate', async interaction => {
 	}
 })
 
+client.on('messageCreate', async message => {
+    if(message.author.bot) return
+
+    if (message.channel.name == 'creations'){
+        if (message.attachments.size || message.embeds.length) {
+            message.react('👍').catch((err) => {})
+        } else {
+            await message.delete().catch((err) => {})
+			if (!message.member.dmChannel) {
+				await message.member.createDM()
+			}
+			message.member.dmChannel.send(`Your message in creations was removed due to not containing any images/creations. If you wish to give feedback on someone's post you can do it in the dedicated thread.`).catch(err => {})
+        }
+    }
+})
+
 client.login(process.env.DISCORD_TOKEN);
 connection.connect()
+
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
+});
