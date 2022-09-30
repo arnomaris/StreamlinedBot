@@ -1,11 +1,16 @@
+
+const { WebhookClient } = require('discord.js')
 const connection = require('./connection.js')
+require('dotenv').config();
+
+const webhookClient = new WebhookClient({id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN})
 
 exports.getEntry = function(messageid) {
     return new Promise((resolve, reject) => {
-        connection.database.query(`SELECT id FROM photocontest WHERE messageid='${messageid}'`, function (err, result, fields) {
+        connection.pool.query(`SELECT id FROM photocontest WHERE messageid='${messageid}'`, function (err, result, fields) {
             if (err) {
-                resolve(undefined) 
-                console.log(err) 
+                reject(err)
+                console.log(err)
             }
             if (result[0])
                 resolve(result[0].id)
@@ -16,7 +21,7 @@ exports.getEntry = function(messageid) {
 }
 
 exports.updateEntry = function(messageid, id) {
-    connection.database.query(`UPDATE photocontest SET id='${id}' WHERE messageid='${messageid}'`, function (err, result, fields) {
+    connection.pool.query(`UPDATE photocontest SET id='${id}' WHERE messageid='${messageid}'`, function (err) {
         if (err) {
             console.log(err) 
         }
@@ -25,9 +30,9 @@ exports.updateEntry = function(messageid, id) {
 
 exports.getMessage = function(id) {
     return new Promise((resolve, reject) => {
-        connection.database.query(`SELECT messageid FROM photocontest WHERE id='${id}'`, function (err, result, fields) {
+        connection.pool.query(`SELECT messageid FROM photocontest WHERE id='${id}'`, function (err, result) {
             if (err) {
-                resolve(undefined) 
+                reject(err) 
                 console.log(err) 
             }
             if (result[0])
@@ -39,7 +44,7 @@ exports.getMessage = function(id) {
 }
 
 exports.updateMessage = function(id, messageid) {
-    connection.database.query(`UPDATE photocontest SET messageid='${messageid}' WHERE id='${id}'`, function (err, result, fields) {
+    connection.pool.query(`UPDATE photocontest SET messageid='${messageid}' WHERE id='${id}'`, function (err) {
         if (err) {
             console.log(err) 
         }
@@ -47,18 +52,23 @@ exports.updateMessage = function(id, messageid) {
 }
 
 exports.setMessage = function(id, messageid) {
-    connection.database.query(`INSERT INTO photocontest VALUES(${id}, ${messageid})`, function (err, result, fields) {
-        if (err) {
-            console.log(err) 
-        }
+    return new Promise((resolve, reject) => {
+        connection.pool.query(`INSERT INTO photocontest VALUES(${id}, ${messageid})`, function (err) {
+            if (err) {
+                reject(err) 
+                console.log(err) 
+            } else
+                resolve(null)
+        })
     })
 }
 
 exports.deleteMessage = function(messageid) {
     return new Promise((resolve, reject) => {
-        connection.database.query(`DELETE FROM photocontest WHERE messageid='${messageid}'`, function (err, result, fields) {
+        connection.pool.query(`DELETE FROM photocontest WHERE messageid='${messageid}'`, function (err) {
             if (err) {
-                resolve(err) 
+                reject(err)
+                console.log(err)
             } else {
                 resolve(true)
             }
@@ -67,7 +77,7 @@ exports.deleteMessage = function(messageid) {
 }
 
 exports.deleteEntry = function(id) {
-    connection.database.query(`DELETE FROM photocontest WHERE id='${id}'`, function (err, result, fields) {
+    connection.pool.query(`DELETE FROM photocontest WHERE id='${id}'`, function (err) {
         if (err) {
             console.log(err) 
         }
@@ -76,10 +86,10 @@ exports.deleteEntry = function(id) {
 
 exports.getEntries = function() {
     return new Promise((resolve, reject) => {
-        connection.database.query(`SELECT messageid, id FROM photocontest`, function (err, result, fields) {
+        connection.pool.query(`SELECT messageid, id FROM photocontest`, function (err, result) {
             if (err) {
-                resolve(undefined) 
-                console.log(err) 
+                reject(err)
+                console.log(err)
             }
             if (result)
                 resolve(result)
@@ -90,7 +100,7 @@ exports.getEntries = function() {
 }
 
 exports.clearEntries = function(id, messageid) {
-    connection.database.query(`DELETE FROM photocontest`, function (err, result, fields) {
+    connection.pool.query(`DELETE FROM photocontest`, function (err) {
         if (err) {
             console.log(err) 
         }
@@ -99,10 +109,10 @@ exports.clearEntries = function(id, messageid) {
 
 exports.getVote = function(id) {
     return new Promise((resolve, reject) => {
-        connection.database.query(`SELECT messageid FROM voted WHERE id='${id}'`, function (err, result, fields) {
+        connection.pool.query(`SELECT messageid FROM voted WHERE id='${id}'`, function (err, result, fields) {
             if (err) {
-                resolve(undefined) 
-                console.log(err) 
+                reject(err)
+                console.log(err)
             }
             if (result[0])
                 resolve(result[0].messageid)
@@ -114,14 +124,14 @@ exports.getVote = function(id) {
 
 exports.getVotes = function() {
     return new Promise((resolve, reject) => {
-        connection.database.query(`
+        connection.pool.query(`
         SELECT p.messageid, p.id, COUNT(v.id) AS votes 
         FROM voted AS v RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID 
         GROUP BY p.messageid 
         ORDER BY COUNT(v.id) DESC`, function (err, result, fields) {
             if (err) {
-                resolve(undefined) 
-                console.log(err) 
+                reject(err)
+                console.log(err)
             }
             if (result)
                 resolve(result)
@@ -132,7 +142,7 @@ exports.getVotes = function() {
 }
 
 exports.updateVote = function(id, messageid) {
-    connection.database.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}'`, function (err, result, fields) {
+    connection.pool.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}'`, function (err) {
         if (err) {
             console.log(err) 
         }
@@ -140,15 +150,15 @@ exports.updateVote = function(id, messageid) {
 }
 
 exports.setVote = function(id, messageid) {
-    connection.database.query(`INSERT INTO voted VALUES(${id}, ${messageid})`, function (err, result, fields) {
+    connection.pool.query(`INSERT INTO voted VALUES(${id}, ${messageid})`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.clearVotes = function(id, messageid) {
-    connection.database.query(`DELETE FROM voted`, function (err, result, fields) {
+exports.clearVotes = function() {
+    connection.pool.query(`DELETE FROM voted`, function (err) {
         if (err) {
             console.log(err) 
         }

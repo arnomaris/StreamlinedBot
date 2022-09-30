@@ -1,22 +1,10 @@
-const clientHandler = require('./../client.js')
-const randomUtil = require('./../utility/randomUtil.js')
-
-const commands = {
-    game: 'game',
-    roadmap: 'roadmap',
-    trello: 'roadmap',
-    wiki: 'wiki',
-    discord: 'discord',
-    changelog: 'changelog',
-    ost: 'ost',
-    tutorial: 'tutorial',
-}
+const random = require('./random.js');
 
 const messageAnswers = {
     game: '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
     roadmap: '<https://trello.com/b/XRMAfup0/streamlined-roadmap>',
     wiki: '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
-    discord: 'https://discord.gg/Wmeugg8',
+    discord: 'https://discord.gg/streamlined',
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
     ost: '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
     tutorial: '<https://devforum.roblox.com/t/streamlined-tutorial/600185>'
@@ -32,21 +20,7 @@ const funnyMessages = {
     tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"]
 }
 
-module.exports = function(message, isInteraction) {
-    if (isInteraction) {
-        let fMes = funnyMessages[commands[message.data.name]]
-        clientHandler.client.api.interactions(message.id, message.token).callback.post({
-            data: {
-                type: 4,
-                data: {
-                    content: fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[commands[message.data.name]]
-                }
-            }
-        })
-    } else {
-        let content = message.content.split(process.env.PREFIX)[1].toLowerCase()
-        let command = commands[content]
-        let fMes = funnyMessages[command]
-        message.lineReplyNoMention(fMes[randomUtil.random(fMes.length)] + "\n" + messageAnswers[command])
-    }
+exports.getMessage = function(type) {
+    let fMessages = funnyMessages[type]
+    return fMessages[random.random(fMessages.length)] + "\n" + messageAnswers[type]
 }
