@@ -150,13 +150,19 @@ module.exports = {
                     let entry = await photocontestChannel.messages.fetch(entryId).catch(err => {
                         interaction.editReply('There was an error while fetching your entry')
                     })
-                    interaction.user.dmChannel.send({ 
-                        content: "This is your most recent submission:", 
-                        files: [{
-                            attachment: entry.attachments.first().url
-                        }]
-                    })
-                    interaction.editReply(`I send your submission in DM's!`)
+                    if (interaction.user.dmChannel) {
+                        interaction.user.dmChannel.send({ 
+                            content: "This is your most recent submission:", 
+                            files: [{
+                                attachment: entry.attachments.first().url
+                            }]
+                        }).catch(err => {
+                            interaction.editReply(`I could not send you a DM!`)
+                        })
+                        interaction.editReply(`I send your submission in DM's!`)
+                    } else {
+                        interaction.editReply(`I could not send you a DM, make sure your DMs are open!`)
+                    }
                 } else {
                     interaction.editReply('I was not able to find any entries from you, you can submit one using `/photocontest submit`')
                 }
