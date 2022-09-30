@@ -83,10 +83,12 @@ client.on('messageCreate', async message => {
             message.react('👍').catch((err) => {})
         } else {
             await message.delete().catch((err) => {})
+			console.log(message.member.dmChannel)
 			if (!message.member.dmChannel) {
 				await message.member.createDM()
 			}
-			message.member.dmChannel.send(`Your message in creations was removed due to not containing any images/creations. If you wish to give feedback on someone's post you can do it in the dedicated thread.`).catch(err => {})
+			if (message.member.dmChannel)
+				message.member.dmChannel.send(`Your message in creations was removed due to not containing any images/creations. If you wish to give feedback on someone's post you can do it in the dedicated thread.`).catch(err => {})
         }
     }
 })
