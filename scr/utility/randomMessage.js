@@ -20,7 +20,7 @@ const funnyMessages = {
     tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"]
 }
 
-exports.getMessage = function (type) {
+exports.getMessage = function(type) {
     let fMessages = funnyMessages[type]
     return fMessages[random.random(fMessages.length)] + "\n" + messageAnswers[type]
 }
