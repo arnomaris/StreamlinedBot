@@ -88,10 +88,10 @@ module.exports = {
                         })
                         await interaction.editReply(`Your submission was successful, if you want to check out your submission use </photocontest checkout:${interaction.id}>`)
 
-                        let oldWarnMessage = photocontestChannel.messages.cache.find(message => message.content == warningMessageContent)
-                        if (oldWarnMessage) {
-                            oldWarnMessage.delete()
-                        }
+                        let messages = await photocontestChannel.messages.fetch({ limit: 5 })
+                        messages.filter(message => message.content == warningMessageContent).forEach(message => {
+                            message.delete()
+                        })
                         photocontestChannel.send({ content: warningMessageContent })
                     } else if (lastSubmission != undefined) {
                         await interaction.editReply(`You already submitted a picture, use </photocontest delete:${interaction.id}> first if you want to change your entry!`)
