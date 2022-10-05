@@ -39,7 +39,8 @@ module.exports = {
             subcommand
                 .setName('delete')
                 .setDescription('Delete submission from user')
-                .addStringOption(option => option.setName('messageid').setDescription('MessageID of picture').setRequired(true))),
+                .addStringOption(option => option.setName('messageid').setDescription('MessageID of picture').setRequired(true))
+                .addStringOption(option => option.setName('reason').setDescription('Reason for deletion').setRequired(true))),
     async execute(interaction) {
         switch(interaction.options.getSubcommand()) {
         case 'getuser':
@@ -56,7 +57,9 @@ module.exports = {
         case 'delete':
             await interaction.deferReply()
             var messageId = interaction.options.getString('messageid')
+            var reason = interaction.options.getString('reason')
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
+            var botlogsChannel = interaction.guild.channels.cache.find(channel => channel.name === 'bot-logs')
             let message = await photocontestChannel.messages.fetch(messageId).catch(err => {
                 interaction.editReply('I was not able to fetch this entry')
             })
@@ -66,7 +69,31 @@ module.exports = {
                     interaction.editReply('There was a problem with deleting the entry')
                 })
                 photocontestHandler.deleteMessage(messageId)
-                interaction.editReply(`Succesfully deleted the entry from <@${userId}>`)
+                await interaction.editReply(`Succesfully deleted the entry from <@${userId}>`)
+                let user = interaction.client.users.cache.get(userId)
+                if (user) {
+                    const embed = new EmbedBuilder()
+                        .setColor('#FF470F')
+                        .setTitle('Removed entry')
+                        .setAuthor({name: user.tag, iconUrl: user.avatarURL()})
+                        .setDescription(reason)
+                        .setTimestamp()
+                        .setFooter({ text: 'ID: ' + userId})
+                    botlogsChannel.send({embeds: [embed]})
+                    if (!user.dmChannel) {
+                        await user.createDM()
+                    }
+                    if (user.dmChannel) {
+                        user.dmChannel.send({ content: `Your photocontest entry has been removed with the following reason: ${reason}`}).catch(err => {
+                            interaction.followUp(`I failed to send a dm to <@${userId}>!`)
+                        })
+                        interaction.followUp(`I send a dm to <@${userId}> with the reason!`)
+                    } else {
+                        interaction.followUp(`I could not send a dm to <@${userId}>, their DMs are closed!`)
+                    }
+                } else {
+                    interaction.followUp(`I could not send a dm to <@${userId}>!`)
+                }
             } else
                 interaction.editReply('This is not a valid entry')
             break
@@ -84,6 +111,10 @@ module.exports = {
             settingHandler.updateSetting('voting', false)
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
             photocontestChannel.permissionOverwrites.edit(interaction.guild.roles.cache.find(r => r.name == 'Verified').id, { ViewChannel: false })
+            var messages = await photocontestChannel.messages.fetch({ limit: 5 })
+            messages.filter(message => message.content == warningMessageContent).forEach(message => {
+                message.delete()
+            })
             interaction.reply('The photocontest is now closed')
             break
         case 'openvoting':
@@ -93,6 +124,10 @@ module.exports = {
             if (oldWarnMessage) {
                 oldWarnMessage.delete()
             }
+            var messages = await photocontestChannel.messages.fetch({ limit: 5 })
+            messages.filter(message => message.content == warningMessageContent).forEach(message => {
+                message.delete()
+            })
             interaction.reply('Voting is now open!')
             break
         case 'getvotes':
