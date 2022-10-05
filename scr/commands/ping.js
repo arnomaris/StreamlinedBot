@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, SnowflakeUtil, Client} = require('discord.js');
+const { SlashCommandBuilder, SnowflakeUtil } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
