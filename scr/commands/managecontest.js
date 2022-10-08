@@ -118,6 +118,7 @@ module.exports = {
             interaction.reply('The photocontest is now closed')
             break
         case 'openvoting':
+            settingHandler.updateSetting('photocontest', false)
             settingHandler.updateSetting('voting', true)
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
             let oldWarnMessage = photocontestChannel.messages.cache.find(message => message.content == warningMessageContent)
