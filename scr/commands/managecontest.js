@@ -146,7 +146,7 @@ module.exports = {
                 let textMessage = await photocontestChannel.messages.fetch(entry.messageid).catch(error => {})
                 let member = await interaction.guild.members.fetch(entry.id).catch(error => {})
                 let currentEmbed = embeds[embeds.length - 1]
-                if (currentEmbed.fields && currentEmbed.fields.length >= 25) {
+                if (currentEmbed.data.fields && currentEmbed.data.fields.length >= 25) {
                     embeds.push(new EmbedBuilder()
                         .setColor('#000000'))
                     currentEmbed = embeds[embeds.length - 1]
