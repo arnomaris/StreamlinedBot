@@ -134,7 +134,6 @@ module.exports = {
         case 'getvotes':
             await interaction.deferReply()
             let votes = await photocontestHandler.getVotes()
-            console.log(votes)
             let embeds = []
             embeds.push(new EmbedBuilder()
                 .setColor('#000000')
@@ -147,6 +146,11 @@ module.exports = {
                 let member = await interaction.guild.members.fetch(entry.id).catch(error => {})
                 let currentEmbed = embeds[embeds.length - 1]
                 if (currentEmbed.data.fields && currentEmbed.data.fields.length >= 25) {
+                    if (embeds.length == 1) {
+                        interaction.editReply({embeds: [currentEmbed]})
+                    } else {
+                        interaction.channel.send({embeds: [currentEmbed]})
+                    }
                     embeds.push(new EmbedBuilder()
                         .setColor('#000000'))
                     currentEmbed = embeds[embeds.length - 1]
@@ -157,7 +161,11 @@ module.exports = {
                     currentEmbed.addFields({name: "Invalid entry", value: `[Votes: ${entry.votes}]`})
                 }
             }
-            interaction.editReply({embeds: embeds})
+            if (embeds.length == 1) {
+                interaction.editReply({embeds: embeds[embeds.length - 1]})
+            } else {
+                interaction.channel.send({embeds: embeds[embeds.length - 1]})
+            }
             break
         case 'reset':
             const actionRow = new ActionRowBuilder()
