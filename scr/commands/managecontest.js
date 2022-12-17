@@ -162,9 +162,9 @@ module.exports = {
                 }
             }
             if (embeds.length == 1) {
-                interaction.editReply({embeds: embeds[embeds.length - 1]})
+                interaction.editReply({embeds: [embeds[embeds.length - 1]]})
             } else {
-                interaction.channel.send({embeds: embeds[embeds.length - 1]})
+                interaction.channel.send({embeds: [embeds[embeds.length - 1]]})
             }
             break
         case 'reset':
