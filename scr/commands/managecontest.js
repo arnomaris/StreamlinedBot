@@ -1,8 +1,9 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, Collection, SnowflakeUtil } = require('discord.js')
 const photocontestHandler = require('./../database/photocontestHandler.js')
 const settingHandler = require('./../database/settingHandler.js')
 
 const warningMessageContent = 'The photo contest is currently accepting submissions! Use `/photocontest submit` with your picture in #botcommands\nVoting is currently closed, wait until the announcement to vote!'
+const votingMessage = 'Voting is open, make sure to look at all the submissions and vote for you favorite one!'
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -46,7 +47,7 @@ module.exports = {
         case 'getuser':
             await interaction.deferReply()
             var messageId = interaction.options.getString('messageid')
-            let userId = await photocontestHandler.getEntry(messageId).catch(err => {
+            let userId = await photocontestHandler.getEntry(messageId, interaction.guild.id).catch(err => {
                 interaction.editReply('Experienced error while getting user')
             })
             if (userId)
@@ -64,11 +65,11 @@ module.exports = {
                 interaction.editReply('I was not able to fetch this entry')
             })
             if (message) {
-                let userId = await photocontestHandler.getEntry(messageId)
+                let userId = await photocontestHandler.getEntry(messageId, interaction.guild.id)
                 await message.delete().catch(err => {
                     interaction.editReply('There was a problem with deleting the entry')
                 })
-                photocontestHandler.deleteMessage(messageId)
+                photocontestHandler.deleteMessage(messageId, interaction.guild.id)
                 await interaction.editReply(`Succesfully deleted the entry from <@${userId}>`)
                 let user = interaction.client.users.cache.get(userId)
                 if (user) {
@@ -98,8 +99,14 @@ module.exports = {
                 interaction.editReply('This is not a valid entry')
             break
         case 'open':
-            settingHandler.updateSetting('photocontest', true)
+            settingHandler.updateSetting('photocontest', interaction.guild.id, true)
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
+            
+            var messages = await photocontestChannel.messages.fetch({ limit: 5 })
+            messages.filter(message => message.content == votingMessage).forEach(message => {
+                message.delete()
+            })
+
             await photocontestChannel.send(warningMessageContent)
             await photocontestChannel.permissionOverwrites.edit(interaction.guild.roles.cache.find(r => r.name == 'Verified').id, { ViewChannel: true }).catch(err => {
                 interaction.reply('I was not able to open the photo contest')
@@ -107,33 +114,55 @@ module.exports = {
             interaction.reply('Photocontest is now open, let the ugly pictures come in :))')
             break
         case 'close':
-            settingHandler.updateSetting('photocontest', false)
-            settingHandler.updateSetting('voting', false)
+            settingHandler.updateSetting('photocontest', interaction.guild.id, false)
+            settingHandler.updateSetting('voting', interaction.guild.id, false)
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
             photocontestChannel.permissionOverwrites.edit(interaction.guild.roles.cache.find(r => r.name == 'Verified').id, { ViewChannel: false })
             var messages = await photocontestChannel.messages.fetch({ limit: 5 })
-            messages.filter(message => message.content == warningMessageContent).forEach(message => {
+            messages.filter(message => message.content == warningMessageContent || message.content == votingMessage).forEach(message => {
                 message.delete()
             })
             interaction.reply('The photocontest is now closed')
             break
         case 'openvoting':
-            settingHandler.updateSetting('photocontest', false)
-            settingHandler.updateSetting('voting', true)
+            settingHandler.updateSetting('photocontest', interaction.guild.id, false)
+            settingHandler.updateSetting('voting', interaction.guild.id, true)
             var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
-            let oldWarnMessage = photocontestChannel.messages.cache.find(message => message.content == warningMessageContent)
-            if (oldWarnMessage) {
-                oldWarnMessage.delete()
-            }
+
             var messages = await photocontestChannel.messages.fetch({ limit: 5 })
-            messages.filter(message => message.content == warningMessageContent).forEach(message => {
+            messages.filter(message => message.content == warningMessageContent || message.content == votingMessage).forEach(message => {
                 message.delete()
             })
+
+            let entries = await photocontestHandler.getEntries(interaction.guild.id)
+            entries.sort((entryA, entryB) => SnowflakeUtil.timestampFrom(entryA.messageid) - SnowflakeUtil.timestampFrom(entryB.messageid))
+            console.log(entries[0])
+
+            var actionRow = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setLabel('To top')
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(`https://discord.com/channels/${interaction.guild.id}/${photocontestChannel.id}/${entries[0].messageid}`),
+                    new ButtonBuilder()
+                        .setLabel('My vote')
+                        .setCustomId('voted')
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel('Remove vote')
+                        .setCustomId('remove_vote')
+                        .setStyle(ButtonStyle.Danger),
+                )
+            await photocontestChannel.send({
+                content: votingMessage,
+                components: [actionRow]
+            })
+
             interaction.reply('Voting is now open!')
             break
         case 'getvotes':
             await interaction.deferReply()
-            let votes = await photocontestHandler.getVotes()
+            let votes = await photocontestHandler.getVotes(interaction.guild.id)
             let embeds = []
             embeds.push(new EmbedBuilder()
                 .setColor('#000000')
@@ -168,7 +197,7 @@ module.exports = {
             }
             break
         case 'reset':
-            const actionRow = new ActionRowBuilder()
+            var actionRow = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
                         .setLabel('Reset contest')

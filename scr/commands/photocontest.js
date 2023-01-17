@@ -50,7 +50,7 @@ module.exports = {
         switch(interaction.options.getSubcommand()) {
             case 'submit':
                 await interaction.deferReply()
-                let photoContestOpen = await settingHandler.getSetting('photocontest').catch(err => {
+                let photoContestOpen = await settingHandler.getSetting('photocontest', interaction.guild.id).catch(err => {
                     interaction.reply({content: 'Experienced error while sumbitting your picture', ephemeral: true})
                 })
                 if (photoContestOpen === 'false') {
@@ -61,7 +61,7 @@ module.exports = {
                 const attachment = interaction.options.getAttachment('attachment')
                 let attachementUrl = attachment.url
                 if (attachementUrl.endsWith('png') || attachementUrl.endsWith('jpeg') || attachementUrl.endsWith('jpg')) {
-                    let lastSubmission = await photocontestHandler.getMessage(interaction.user.id).catch(err => {
+                    let lastSubmission = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                         interaction.editReply('Experienced error while checking submission validity, please try again')
                     })
                     if (lastSubmission == null) {
@@ -82,7 +82,7 @@ module.exports = {
                             components: [actionRow]
                         })
 
-                        photocontestHandler.setMessage(interaction.user.id, submission.id).catch(err => {
+                        photocontestHandler.setMessage(interaction.user.id, submission.id, interaction.guild.id).catch(err => {
                             interaction.editReply('Experienced error while sumbitting your picture')
                             submission.delete()
                         })
@@ -103,11 +103,11 @@ module.exports = {
             case 'remove': // alias for delete
             case 'delete':
                 await interaction.deferReply()
-                var entryId = await photocontestHandler.getMessage(interaction.user.id).catch(err => {
+                var entryId = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                     interaction.editReply('An error occurred while deleting your entry, please try again')
                 })
                 if (entryId) {
-                    let photoContestOpen = await settingHandler.getSetting('photocontest').catch(err => {
+                    let photoContestOpen = await settingHandler.getSetting('photocontest', interaction.guild.id).catch(err => {
                         interaction.reply({content: 'Experienced error while deleting your picture', ephemeral: true})
                     })
                     if (photoContestOpen === 'false') {
@@ -117,14 +117,14 @@ module.exports = {
                     try {
                         let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
                         let entry = await photocontestChannel.messages.fetch(entryId).catch(err => {
-                            photocontestHandler.deleteEntry(interaction.user.id)
+                            photocontestHandler.deleteEntry(interaction.user.id, interaction.guild.id)
                             interaction.editReply('Your submission was corrupted, you can submit a new picture now.')
                         })
                         if (entry) {
                             await entry.delete().catch(err => {
                                 interaction.editReply('There was a problem with deleting your entry')
                             })
-                            photocontestHandler.deleteEntry(interaction.user.id)
+                            photocontestHandler.deleteEntry(interaction.user.id, interaction.guild.id)
                             interaction.editReply('Succesfully deleted your entry')
                         } else {
                             interaction.editReply('An error occurred while deleting your entry, please try again')
@@ -139,7 +139,7 @@ module.exports = {
                 break
             case 'checkout':
                 await interaction.deferReply({ ephemeral: true })
-                var entryId = await photocontestHandler.getMessage(interaction.user.id).catch(err => {
+                var entryId = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                     interaction.editReply('Experienced error while getting your submission')
                 })
                 if (entryId) {
@@ -169,7 +169,7 @@ module.exports = {
                 break
             case 'voted':
                 await interaction.deferReply({ephemeral: true})
-                let voteId = await photocontestHandler.getVote(interaction.user.id)
+                let voteId = await photocontestHandler.getVote(interaction.user.id, interaction.guild.id)
                 if (voteId) {
                     let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
                     interaction.editReply(`You voted for: https://discord.com/channels/${interaction.guild.id}/${photocontestChannel.id}/${voteId}`)

@@ -6,9 +6,9 @@ module.exports = {
         name: 'reset_contest'
     },
     async execute(interaction) {
-        await interaction.deferReply()
-        photocontestHandler.clearEntries()
-        photocontestHandler.clearVotes()
+        await interaction.deferReply(interaction.guild.id)
+        photocontestHandler.clearEntries(interaction.guild.id)
+        photocontestHandler.clearVotes(interaction.guild.id)
 
         let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
         let amountOfMessages = 1
@@ -22,8 +22,8 @@ module.exports = {
                 break
             }
         }
-        settingHandler.updateSetting('photocontest', false)
-        settingHandler.updateSetting('voting', false)
+        settingHandler.updateSetting('photocontest', false, interaction.guild.id)
+        settingHandler.updateSetting('voting', false, interaction.guild.id)
         await interaction.editReply('Successfully cleared the photo contest, start a new one with `/managecontest open`')
     }
 };

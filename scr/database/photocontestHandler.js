@@ -5,9 +5,9 @@ require('dotenv').config();
 
 const webhookClient = new WebhookClient({id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN})
 
-exports.getEntry = function(messageid) {
+exports.getEntry = function(messageid, guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`SELECT id FROM photocontest WHERE messageid='${messageid}'`, function (err, result, fields) {
+        connection.pool.query(`SELECT id FROM photocontest WHERE messageid='${messageid}' AND guild='${guild}'`, function (err, result, fields) {
             if (err) {
                 reject(err)
                 console.log(err)
@@ -20,17 +20,17 @@ exports.getEntry = function(messageid) {
     })
 }
 
-exports.updateEntry = function(messageid, id) {
-    connection.pool.query(`UPDATE photocontest SET id='${id}' WHERE messageid='${messageid}'`, function (err) {
+exports.updateEntry = function(messageid, id, guild) {
+    connection.pool.query(`UPDATE photocontest SET id='${id}' WHERE messageid='${messageid}' AND guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.getMessage = function(id) {
+exports.getMessage = function(id, guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`SELECT messageid FROM photocontest WHERE id='${id}'`, function (err, result) {
+        connection.pool.query(`SELECT messageid FROM photocontest WHERE id='${id}' AND guild='${guild}'`, function (err, result) {
             if (err) {
                 reject(err) 
                 console.log(err) 
@@ -43,17 +43,17 @@ exports.getMessage = function(id) {
     })
 }
 
-exports.updateMessage = function(id, messageid) {
-    connection.pool.query(`UPDATE photocontest SET messageid='${messageid}' WHERE id='${id}'`, function (err) {
+exports.updateMessage = function(id, messageid, guild) {
+    connection.pool.query(`UPDATE photocontest SET messageid='${messageid}' WHERE id='${id}' AND guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.setMessage = function(id, messageid) {
+exports.setMessage = function(id, messageid, guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`INSERT INTO photocontest VALUES(${id}, ${messageid})`, function (err) {
+        connection.pool.query(`INSERT INTO photocontest VALUES(${id}, ${messageid}, ${guild})`, function (err) {
             if (err) {
                 reject(err) 
                 console.log(err) 
@@ -63,9 +63,9 @@ exports.setMessage = function(id, messageid) {
     })
 }
 
-exports.deleteMessage = function(messageid) {
+exports.deleteMessage = function(messageid, guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`DELETE FROM photocontest WHERE messageid='${messageid}'`, function (err) {
+        connection.pool.query(`DELETE FROM photocontest WHERE messageid='${messageid}' AND guild='${guild}'`, function (err) {
             if (err) {
                 reject(err)
                 console.log(err)
@@ -76,17 +76,17 @@ exports.deleteMessage = function(messageid) {
     })
 }
 
-exports.deleteEntry = function(id) {
-    connection.pool.query(`DELETE FROM photocontest WHERE id='${id}'`, function (err) {
+exports.deleteEntry = function(id, guild) {
+    connection.pool.query(`DELETE FROM photocontest WHERE id='${id}' AND guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.getEntries = function() {
+exports.getEntries = function(guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`SELECT messageid, id FROM photocontest`, function (err, result) {
+        connection.pool.query(`SELECT messageid, id FROM photocontest WHERE guild='${guild}'`, function (err, result) {
             if (err) {
                 reject(err)
                 console.log(err)
@@ -99,17 +99,17 @@ exports.getEntries = function() {
     })
 }
 
-exports.clearEntries = function(id, messageid) {
-    connection.pool.query(`DELETE FROM photocontest`, function (err) {
+exports.clearEntries = function(guild) {
+    connection.pool.query(`DELETE FROM photocontest WHERE guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.getVote = function(id) {
+exports.getVote = function(id, guild) {
     return new Promise((resolve, reject) => {
-        connection.pool.query(`SELECT messageid FROM voted WHERE id='${id}'`, function (err, result, fields) {
+        connection.pool.query(`SELECT messageid FROM voted WHERE id='${id}' AND guild='${guild}'`, function (err, result, fields) {
             if (err) {
                 reject(err)
                 console.log(err)
@@ -122,11 +122,12 @@ exports.getVote = function(id) {
     })
 }
 
-exports.getVotes = function() {
+exports.getVotes = function(guild) {
     return new Promise((resolve, reject) => {
         connection.pool.query(`
         SELECT p.messageid, p.id, COUNT(v.id) AS votes 
-        FROM voted AS v RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID 
+        FROM voted AS v RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID
+        WHERE p.guild='${guild}'
         GROUP BY p.messageid 
         ORDER BY COUNT(v.id) DESC`, function (err, result, fields) {
             if (err) {
@@ -141,24 +142,32 @@ exports.getVotes = function() {
     })
 }
 
-exports.updateVote = function(id, messageid) {
-    connection.pool.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}'`, function (err) {
+exports.updateVote = function(id, messageid, guild) {
+    connection.pool.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}' AND guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.setVote = function(id, messageid) {
-    connection.pool.query(`INSERT INTO voted VALUES(${id}, ${messageid})`, function (err) {
+exports.setVote = function(id, messageid, guild) {
+    connection.pool.query(`INSERT INTO voted VALUES(${id}, ${messageid}, ${guild})`, function (err) {
         if (err) {
             console.log(err) 
         }
     })
 }
 
-exports.clearVotes = function() {
-    connection.pool.query(`DELETE FROM voted`, function (err) {
+exports.deleteVote = function(id, messageid, guild) {
+    connection.pool.query(`DELETE FROM voted WHERE id='${id}' AND messageid='${messageid}' AND guild='${guild}'`, function (err) {
+        if (err) {
+            console.log(err) 
+        }
+    })
+}
+
+exports.clearVotes = function(guild) {
+    connection.pool.query(`DELETE FROM voted WHERE guild='${guild}'`, function (err) {
         if (err) {
             console.log(err) 
         }
