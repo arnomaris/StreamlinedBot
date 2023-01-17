@@ -9,7 +9,7 @@ module.exports = {
         const member = interaction.options.getMember('member')
         if (member) {
             if (member.premiumSince) {
-                interaction.reply(`${member.displayName} has been boosting since ${member.premiumSince}`)
+                interaction.reply(`${member.displayName} has been boosting since ${member.premiumSince.toLocaleDateString("nl-NL")}`)
             } else {
                 interaction.reply(`${member.displayName} is not a booster <:doggosad:610744652781322251>`)
             }
