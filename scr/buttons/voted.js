@@ -8,9 +8,9 @@ module.exports = {
         let voteId = await photocontestHandler.getVote(interaction.user.id, interaction.guild.id)
         if (voteId) {
             let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
-            interaction.reply(`You voted for: https://discord.com/channels/${interaction.guild.id}/${photocontestChannel.id}/${voteId}`)
+            interaction.reply({content: `You voted for: https://discord.com/channels/${interaction.guild.id}/${photocontestChannel.id}/${voteId}`, ephemeral: true})
         } else {
-            interaction.reply('You did not vote for anyone yet!')
+            interaction.reply({content: 'You did not vote for anyone yet!', ephemeral: true})
         }
     }
 }

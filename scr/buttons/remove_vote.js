@@ -8,9 +8,9 @@ module.exports = {
         let voteId = await photocontestHandler.getVote(interaction.user.id, interaction.guild.id)
         if (voteId) {
             photocontestHandler.deleteVote(interaction.user.id, voteId, interaction.guild.id)
-            interaction.reply('Successfully deleted your vote')
+            interaction.reply({ content: 'Successfully deleted your vote', ephemeral: true})
         } else {
-            interaction.reply('You did not vote for anyone yet!')
+            interaction.reply({content: 'You did not vote for anyone yet!', ephemeral: true})
         }
     }
 }
