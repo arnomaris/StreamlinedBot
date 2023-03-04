@@ -31,6 +31,13 @@ module.exports = {
                 .setName('voted')
                 .setDescription('See the submission you voted for')),
     async execute(interaction) {
+        if (interaction.member.roles.cache.find(role => role.name === 'Photo Contest Ban')) {
+            interaction.reply({ 
+                content: 'You are currently not allowed to participate in photo contests.', 
+                ephemeral: true 
+            })
+            return
+        }
         if (!interaction.member.roles.cache.find(role => role.name === 'Photo Contest')) {
             const actionRow = new ActionRowBuilder()
                 .addComponents(
