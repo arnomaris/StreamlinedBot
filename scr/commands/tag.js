@@ -16,8 +16,8 @@ module.exports = {
 				)),
     async execute(interaction) {
         if (interaction.channel.isThread()) {
-            const tag = interaction.options.getString('tag');
-            const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === tag).id
+            const tagName = interaction.options.getString('tag');
+            const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === tagName).id
             interaction.channel.setAppliedTags([tagId])
             interaction.reply({ content: "Applied tag!", ephemeral: true })
         } else {
