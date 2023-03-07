@@ -15,7 +15,7 @@ module.exports = {
 					{ name: 'Broken', value: 'Broken' },
 				)),
     async execute(interaction) {
-        if (interaction.channel.isThread() && interaction.channel.name == "testing") {
+        if (interaction.channel.isThread()) {
             const tag = interaction.options.getString('tag');
             interaction.channel.setAppliedTags([tag])
             interaction.reply({ content: "Applied tag!", ephemeral: true })
