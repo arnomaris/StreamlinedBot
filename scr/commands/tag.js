@@ -17,7 +17,8 @@ module.exports = {
     async execute(interaction) {
         if (interaction.channel.isThread()) {
             const tag = interaction.options.getString('tag');
-            interaction.channel.setAppliedTags([tag])
+            const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === tag).id
+            interaction.channel.setAppliedTags([tagId])
             interaction.reply({ content: "Applied tag!", ephemeral: true })
         } else {
             interaction.reply({ content: "This command does not work in this channel!", ephemeral: true })
