@@ -13,7 +13,7 @@ module.exports = {
             let userId = interaction.user.id
             let messageId = interaction.message.id
             if (!(await photocontestHandler.getEntry(messageId, interaction.guild.id) == userId)) {
-                photocontestHandler.getVote(userId).then(async (value) => {
+                photocontestHandler.getVote(userId, interaction.guild.id).then(async (value) => {
                     if (value) {
                         photocontestHandler.updateVote(userId, messageId, interaction.guild.id)
                         await interaction.reply({content: 'Changed your vote successfully', ephemeral: true})
