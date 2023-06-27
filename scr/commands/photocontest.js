@@ -56,7 +56,7 @@ module.exports = {
         }
         switch(interaction.options.getSubcommand()) {
             case 'submit':
-                await interaction.deferReply()
+                await interaction.deferReply({ ephemeral: true })
                 let photoContestOpen = await settingHandler.getSetting('photocontest', interaction.guild.id).catch(err => {
                     interaction.reply({content: 'Experienced error while sumbitting your picture', ephemeral: true})
                 })
@@ -109,7 +109,7 @@ module.exports = {
                 break
             case 'remove': // alias for delete
             case 'delete':
-                await interaction.deferReply()
+                await interaction.deferReply({ ephemeral: true })
                 var entryId = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                     interaction.editReply('An error occurred while deleting your entry, please try again')
                 })

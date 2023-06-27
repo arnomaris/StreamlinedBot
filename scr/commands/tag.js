@@ -19,7 +19,7 @@ module.exports = {
             const tagName = interaction.options.getString('tag');
             const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === tagName).id
             interaction.channel.setAppliedTags([tagId])
-            interaction.channel.send({ content: `Tag: ${tagName} applied by user ${interaction.user.username}` })
+            interaction.channel.send({ content: `Tag \`${tagName}\` applied by \`${interaction.user.username}\`` })
             interaction.reply({ content: "Applied tag!", ephemeral: true })
         } else {
             interaction.reply({ content: "This command does not work in this channel!", ephemeral: true })
