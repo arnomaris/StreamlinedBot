@@ -6,8 +6,9 @@ const messageAnswers = {
     wiki: '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
     discord: 'https://discord.gg/streamlined',
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
-    ost: '<https://www.youtube.com/watch?v=9VlVPbbumuo>',
-    tutorial: '<https://devforum.roblox.com/t/streamlined-tutorial/600185>'
+    ost: '<https://www.youtube.com/watch?v=GLVAeL0Z358>',
+    tutorial: '<https://devforum.roblox.com/t/streamlined-tutorial/600185>',
+    merch: '<https://www.redbubble.com/people/Supersnel11/shop>'
 }
 
 const funnyMessages = {
@@ -17,7 +18,8 @@ const funnyMessages = {
     discord: ["Let's get this party started!", "Invite all your friends and extended family!", "Who are you going to invite? *they better be nice*", "Invite them **all**"],
     changelog: ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Awesome updates of an awesome game!"],
     ost: ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"],
-    tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"]
+    tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"],
+    merch: ["They should make a doggo poster", "Awsome merch", "Traitor really made some pretty merch", "Mugs"]
 }
 
 exports.getMessage = function(type) {
