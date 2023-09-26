@@ -19,7 +19,7 @@ const funnyMessages = {
     changelog: ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Awesome updates of an awesome game!"],
     ost: ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"],
     tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"],
-    merch: ["They should make a doggo poster", "Awsome merch", "Traitor really made some pretty merch", "Mugs"]
+    merch: ["They should make a doggo poster", "Awesome merch", "Traitor really made some pretty merch", "Mugs"]
 }
 
 exports.getMessage = function(type) {
