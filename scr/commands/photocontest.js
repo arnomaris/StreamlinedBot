@@ -66,8 +66,6 @@ module.exports = {
                 }
 
                 const attachment = interaction.options.getAttachment('attachment')
-                let attachementUrl = attachment.url
-                console.log(attachment.contentType)
                 if (attachment.contentType.endsWith('png') || attachment.contentType.endsWith('jpeg') || attachment.contentType.endsWith('jpg')) {
                     let lastSubmission = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                         interaction.editReply('Experienced error while checking submission validity, please try again')
