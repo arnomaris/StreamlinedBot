@@ -46,7 +46,7 @@ module.exports = {
                     .setAuthor({name: user.tag, iconUrl: user.avatarURL()})
                     .setDescription(reason)
                     .setTimestamp()
-                    .setImage(attachments.first().url)
+                    .setImage(attachments.first().proxyURL)
                     .setFooter({ text: 'ID: ' + userId})
                 botlogsChannel.send({embeds: [embed]})
                 if (!user.dmChannel) {
