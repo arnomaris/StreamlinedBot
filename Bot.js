@@ -1,13 +1,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const connection = require('./scr/database/connection.js')
+const connection = require('./src/database/connection.js')
 require('dotenv').config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'scr/commands');
+const commandsPath = path.join(__dirname, 'src/commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -19,7 +19,7 @@ for (const file of commandFiles) {
 }
 
 client.buttons = new Collection();
-const buttonsPath = path.join(__dirname, 'scr/buttons');
+const buttonsPath = path.join(__dirname, 'src/buttons');
 const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
 
 for (const file of buttonFiles) {
