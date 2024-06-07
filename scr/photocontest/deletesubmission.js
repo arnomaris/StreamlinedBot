@@ -17,7 +17,7 @@ module.exports = {
             componentType: ComponentType.StringSelect, 
         }); // create select menu collector
 
-        collector.on("collect", async (selectionInteraction) => {
+        collector.once("collect", async (selectionInteraction) => {
             await selectionInteraction.deferReply({ ephemeral: true })
             const value = selectionInteraction.values[0] // first value in collector
             const reason = reasons[value]

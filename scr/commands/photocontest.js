@@ -71,7 +71,9 @@ module.exports = {
                         interaction.editReply('Experienced error while checking submission validity, please try again')
                     })
                     if (lastSubmission == null) {
-                        let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
+                        const photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');
+                        const photocontestAprovalChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest-aproval');
+                        
                         const actionRow = new ActionRowBuilder()
                             .addComponents(
                                 new ButtonBuilder()
@@ -81,18 +83,44 @@ module.exports = {
                                     .setStyle(ButtonStyle.Success),
                             )
 
-                        let submission = await photocontestChannel.send({
+                        const submission = await photocontestChannel.send({
                             files: [{
                                 attachment: attachment.url
                             }],
                             components: [actionRow]
                         })
 
-                        photocontestHandler.setMessage(interaction.user.id, submission.id, interaction.guild.id).catch(err => {
-                            interaction.editReply('Experienced error while sumbitting your picture')
+                        const aprovalRow = new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setLabel('Approve')
+                                    .setEmoji('✔️')
+                                    .setCustomId('photo_approve')
+                                    .setStyle(ButtonStyle.Success),
+                                new ButtonBuilder()
+                                    .setLabel('Reject')
+                                    .setEmoji('✖') 
+                                    .setCustomId('photo_reject')
+                                    .setStyle(ButtonStyle.Danger),
+                            )
+
+                        const aprovalMessage = await photocontestAprovalChannel.send({
+                            content: `Submitted by: <@${interaction.user.id}>`,
+                            files: [{
+                                attachment: attachment.url
+                            }],
+                            components: [aprovalRow]
+                        }).then(() => {
+                            photocontestHandler.setMessage(interaction.user.id, submission.id, interaction.guild.id).catch(err => {
+                                interaction.editReply('Experienced an error while sumbitting your picture')
+                                submission.delete()
+                            })
+                        }).then(() => {
+                            interaction.editReply(`Your submission was successful, if you want to check out your submission use </photocontest checkout:${interaction.id}>`)
+                        }).catch(err => {
+                            interaction.editReply('Experienced an error while sumbitting your picture')
                             submission.delete()
                         })
-                        await interaction.editReply(`Your submission was successful, if you want to check out your submission use </photocontest checkout:${interaction.id}>`)
 
                         let messages = await photocontestChannel.messages.fetch({ limit: 5 })
                         messages.filter(message => message.content == warningMessageContent).forEach(message => {
