@@ -4,7 +4,8 @@
   "description": "Streamlined discord bot",
   "main": "Bot.js",
   "scripts": {
-    "start": "node Bot.js"
+    "start": "node Bot.js",
+    "deploy-commands": "node src/deploy-commands.js"
   },
   "author": "Drolerina",
   "license": "ISC",
