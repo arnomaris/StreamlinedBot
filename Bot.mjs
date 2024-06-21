@@ -1,33 +1,33 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const connection = require('./src/database/connection.js')
-require('dotenv').config();
+import { readdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'url';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import { connect } from './src/database/connection.js';
+import 'dotenv/config';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'src/commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const commandsPath = join(__dirname, './src/commands');
+const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith('.js') || file.endsWith('.mjs'));
 
 for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
-	// Set a new item in the Collection
-	// With the key as the command name and the value as the exported module
-	client.commands.set(command.data.name, command);
+	await import(`./src/commands/${file}`).then(command => {
+		client.commands.set(command.data.name, command);
+	});
 }
 
 client.buttons = new Collection();
-const buttonsPath = path.join(__dirname, 'src/buttons');
-const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+const buttonsPath = join(__dirname, './src/buttons');
+const buttonFiles = readdirSync(buttonsPath).filter(file => file.endsWith('.js') || file.endsWith('.mjs'));
 
 for (const file of buttonFiles) {
-	const filePath = path.join(buttonsPath, file);
-	const button = require(filePath);
-	// Set a new item in the Collection
-	// With the key as the command name and the value as the exported module
-	client.buttons.set(button.data.name, button);
+	await import(`./src/buttons/${file}`).then(button => {
+		console.log(button)
+		client.buttons.set(button.data.name, button);
+	});
 }
 
 client.once('ready', () => {
@@ -94,7 +94,7 @@ client.on('messageCreate', async message => {
 })
 
 client.login(process.env.DISCORD_TOKEN);
-connection.connect()
+connect()
 
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);
