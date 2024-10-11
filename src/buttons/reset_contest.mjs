@@ -1,5 +1,5 @@
-import { clearEntries, clearVotes } from '../database/photocontestHandler.js';
-import { updateSetting } from '../database/settingHandler.js';
+import { clearEntries, clearVotes } from '../database/photocontestHandler.mjs';
+import { updateSetting } from '../database/settingHandler.mjs';
 
 export const data = {
     name: 'reset_contest'

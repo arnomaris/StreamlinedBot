@@ -1,5 +1,5 @@
-import { getEntry, getVote, updateVote, setVote } from '../database/photocontestHandler.js';
-import { getSetting } from '../database/settingHandler.js';
+import { getEntry, getVote, updateVote, setVote } from '../database/photocontestHandler.mjs';
+import { getSetting } from '../database/settingHandler.mjs';
 
 export const data = {
     name: 'photo_vote'

@@ -1,13 +1,13 @@
-const mysql = require('mysql')
-const { WebhookClient, EmbedBuilder } = require('discord.js')
-require('dotenv').config();
+import { createPool } from 'mysql';
+import { WebhookClient, EmbedBuilder } from 'discord.js';
+import 'dotenv/config';
 
 const errorWebhook = new WebhookClient({id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN})
 
-exports.database
+export let pool;
 
-exports.connect = function() {
-    module.exports.pool = mysql.createPool({
+export function connect() {
+    pool = createPool({
         connectionLimit : 10,
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -15,7 +15,7 @@ exports.connect = function() {
         database: process.env.DB_NAME
     })
 
-    module.exports.pool.on('error', function onError(err) {
+    pool.on('error', function onError(err) {
         if (err.code == 'PROTOCOL_CONNECTION_LOST') {
             console.log('Protocol connection lost')
         } else {

@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
-import { connect } from './src/database/connection.js';
+import { connect } from './src/database/connection.mjs';
 import 'dotenv/config';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
@@ -25,7 +25,6 @@ const buttonFiles = readdirSync(buttonsPath).filter(file => file.endsWith('.js')
 
 for (const file of buttonFiles) {
 	await import(`./src/buttons/${file}`).then(button => {
-		console.log(button)
 		client.buttons.set(button.data.name, button);
 	});
 }
@@ -45,9 +44,7 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	} catch (error) {
 		console.error(error)
-		if (interaction.deferred)
-			await interaction.editReply({ content: 'There was an error while executing this command!' })
-		else if (interaction.replied)
+		if (interaction.deferred || interaction.replied)
 			await interaction.editReply({ content: 'There was an error while executing this command!' })
 		else
 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })

@@ -1,4 +1,4 @@
-import { getVote } from '../database/photocontestHandler.js';
+import { getVote } from '../database/photocontestHandler.mjs';
 
 export const data = {
     name: 'voted'

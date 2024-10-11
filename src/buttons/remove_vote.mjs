@@ -1,4 +1,4 @@
-import { getVote, deleteVote } from '../database/photocontestHandler.js'
+import { getVote, deleteVote } from '../database/photocontestHandler.mjs'
 
 export const data = {
     name: 'remove_vote'
