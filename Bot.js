@@ -2,9 +2,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const connection = require('./src/database/connection.js')
+const express = require('express')
+const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+
+const app = express()
 
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'src/commands');
@@ -29,6 +33,14 @@ for (const file of buttonFiles) {
 	// With the key as the command name and the value as the exported module
 	client.buttons.set(button.data.name, button);
 }
+
+const proxy = createProxyMiddleware({
+	target: 'https://discord.com/api', // target host with the same base path
+});
+
+app.get('/', (_req, res) => {
+	res.redirect('https://playstreamlined.com')
+})
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`)
@@ -99,3 +111,6 @@ connection.connect()
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);
 });
+
+app.use('/api', proxy);
+app.listen(3000);
