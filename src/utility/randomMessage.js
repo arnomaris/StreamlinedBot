@@ -3,7 +3,7 @@ const random = require('./random.js');
 const messageAnswers = {
     game: '<https://www.roblox.com/games/1788251222/Streamlined-ALPHA>',
     roadmap: '<https://trello.com/b/XRMAfup0/streamlined-roadmap>',
-    wiki: '<https://streamlined.fandom.com/wiki/Streamlined_Wiki>',
+    wiki: '<https://wiki.playstreamlined.com>',
     discord: 'https://discord.gg/streamlined',
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
     ost: '<https://www.youtube.com/watch?v=GLVAeL0Z358>',
