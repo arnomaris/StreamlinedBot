@@ -8,7 +8,9 @@ const messageAnswers = {
     changelog: '<https://devforum.roblox.com/t/streamlined-change-log/601247>',
     ost: '<https://www.youtube.com/watch?v=GLVAeL0Z358>',
     tutorial: '<https://devforum.roblox.com/t/streamlined-tutorial/600185>',
-    merch: '<https://www.redbubble.com/people/Supersnel11/shop>'
+    merch: '<https://www.redbubble.com/people/Supersnel11/shop>',
+    insta: '<https://www.instagram.com/streamlinedroblox/>',
+    reddit: '<https://www.reddit.com/r/StreamlinedRoblox/>',
 }
 
 const funnyMessages = {
@@ -19,7 +21,9 @@ const funnyMessages = {
     changelog: ["All the updates of the game!", "OOO something new?", "Did we update? Was too busy playing fetch!", "Awesome updates of an awesome game!"],
     ost: ["Play on repeat!", "Want to listen on the go? Also available on Spotify and Apple Music!", "TTTTttttttTTTTTTT", "If we only had an epic sax guy <:doggosad:610744652781322251>"],
     tutorial: ["Let's learn how to play the game!", "Wow this looks like a neat tutorial", "Did you know that you can drive trains in this game?", "Make sure to read it if you are a new player!"],
-    merch: ["They should make a doggo poster", "Awesome merch", "Traitor really made some pretty merch", "Mugs"]
+    merch: ["They should make a doggo poster", "Awesome merch", "Traitor really made some pretty merch", "Mugs"],
+    insta: ["Follow us on Instagram!", "We post cool stuff there!", "We have an Instagram!"],
+    reddit: ["Join the Reddit community!", "We have a Reddit!", "Join the Reddit community!"],
 }
 
 exports.getMessage = function(type) {
