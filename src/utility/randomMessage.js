@@ -11,6 +11,7 @@ const messageAnswers = {
     merch: '<https://www.redbubble.com/people/Supersnel11/shop>',
     insta: '<https://www.instagram.com/streamlinedroblox/>',
     reddit: '<https://www.reddit.com/r/StreamlinedRoblox/>',
+    courant: '<https://wiki.playstreamlined.com/Voorlemsche_Courant_Archive/>',
 }
 
 const funnyMessages = {
@@ -24,6 +25,7 @@ const funnyMessages = {
     merch: ["They should make a doggo poster", "Awesome merch", "Traitor really made some pretty merch", "Mugs"],
     insta: ["Follow us on Instagram!", "We post cool stuff there!", "We have an Instagram!"],
     reddit: ["Join the Reddit community!", "We have a Reddit!", "Join the Reddit community!"],
+    courant: ["Read the Voorlemsche Courant!", "Extra! Extra! Read all about it!", "The Voorlemsche Courant!"],
 }
 
 exports.getMessage = function(type) {
