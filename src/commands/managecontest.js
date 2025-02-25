@@ -5,37 +5,39 @@ const settingHandler = require('./../database/settingHandler.js')
 const warningMessageContent = 'The photo contest is currently accepting submissions! Use `/photocontest submit` with your picture in #botcommands\nVoting is currently closed, wait until the announcement to vote!'
 const votingMessage = 'Voting is open, make sure to look at all the submissions and vote for you favorite one!'
 
-function createVotesEmbed(votes) {
-    return new Promise(async (resolve, reject) => {
-        let embeds = []
-        embeds.push(new EmbedBuilder()
-            .setColor('#000000')
-            .setTitle('Votes')
-        )
-        var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
-        for (let i in votes) {
-            entry = votes[i]
-            let textMessage = await photocontestChannel.messages.fetch(entry.messageid).catch(error => {})
-            let member = await interaction.guild.members.fetch(entry.id).catch(error => {})
-            let currentEmbed = embeds[embeds.length - 1]
-            if (currentEmbed.data.fields && currentEmbed.data.fields.length >= 25) {
-                if (embeds.length == 1) {
-                    interaction.editReply({embeds: [currentEmbed]})
-                } else {
-                    interaction.channel.send({embeds: [currentEmbed]})
-                }
-                embeds.push(new EmbedBuilder()
-                    .setColor('#000000'))
-                currentEmbed = embeds[embeds.length - 1]
-            }
-            if (textMessage && member) {
-                currentEmbed.addFields({name: member.user.tag, value: `[Votes: ${entry.votes}](${textMessage.url})`})
+async function createVotesEmbed(interaction, votes) {
+    let embeds = []
+    embeds.push(new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('Votes')
+    )
+    var photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest')
+    for (let i in votes) {
+        entry = votes[i]
+        let textMessage = await photocontestChannel.messages.fetch(entry.messageid).catch(error => {})
+        let member = await interaction.guild.members.fetch(entry.id).catch(error => {})
+        let currentEmbed = embeds[embeds.length - 1]
+        if (currentEmbed.data.fields && currentEmbed.data.fields.length >= 25) {
+            if (embeds.length == 1) {
+                interaction.editReply({embeds: [currentEmbed]})
             } else {
-                currentEmbed.addFields({name: "Invalid entry", value: `[Votes: ${entry.votes}]`})
+                interaction.channel.send({embeds: [currentEmbed]})
             }
+            embeds.push(new EmbedBuilder()
+                .setColor('#000000'))
+            currentEmbed = embeds[embeds.length - 1]
         }
-        resolve(embeds)
-    })
+        if (textMessage && member) {
+            currentEmbed.addFields({name: member.user.tag, value: `[Votes: ${entry.votes}](${textMessage.url})`})
+        } else {
+            currentEmbed.addFields({name: "Invalid entry", value: `[Votes: ${entry.votes}]`})
+        }
+    }
+    if (embeds.length == 1) {
+        interaction.editReply({embeds: [embeds[embeds.length - 1]]})
+    } else {
+        interaction.channel.send({embeds: [embeds[embeds.length - 1]]})
+    }
 }
 
 
@@ -202,25 +204,11 @@ module.exports = {
             break
         case 'getvotes':
             await interaction.deferReply()
-            await photocontestHandler.getVotes(interaction.guild.id).then(votes => 
-                createVotesEmbed(votes).then((embeds) => {
-                    if (embeds.length == 1) {
-                        interaction.editReply({embeds: [embeds[embeds.length - 1]]})
-                    } else {
-                        interaction.channel.send({embeds: [embeds[embeds.length - 1]]})
-                    }
-                }))
+            await photocontestHandler.getVotes(interaction.guild.id).then(votes => createVotesEmbed(interaction, votes))
             break
         case 'getwinners':
             const amount = interaction.options.getMember('amount')
-            await photocontestHandler.getWinners(interaction.guild.id, amount).then(votes => 
-                createVotesEmbed(votes).then((embeds) => {
-                    if (embeds.length == 1) {
-                        interaction.editReply({embeds: [embeds[embeds.length - 1]]})
-                    } else {
-                        interaction.channel.send({embeds: [embeds[embeds.length - 1]]})
-                    }
-                }))
+            await photocontestHandler.getWinners(interaction.guild.id, amount).then(votes => createVotesEmbed(interaction, votes))
             break
         case 'reset':
             var actionRow = new ActionRowBuilder()
