@@ -6,7 +6,7 @@ const warningMessageContent = 'The photo contest is currently accepting submissi
 const votingMessage = 'Voting is open, make sure to look at all the submissions and vote for you favorite one!'
 
 function createVotesEmbed(votes) {
-    return Promise.new(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         let embeds = []
         embeds.push(new EmbedBuilder()
             .setColor('#000000')
