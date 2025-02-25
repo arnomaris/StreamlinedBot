@@ -142,6 +142,35 @@ exports.getVotes = function(guild) {
     })
 }
 
+exports.getWinners = function(guild, x = 1) {
+    return new Promise((resolve, reject) => {
+        connection.pool.query(`
+        WITH RankedVotes AS (
+            SELECT p.messageid, p.id, COUNT(v.id) AS votes
+            FROM voted AS v 
+            RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID
+            WHERE p.guild = '${guild}'
+            GROUP BY p.messageid
+        ),
+        RankedResults AS (
+            SELECT *, DENSE_RANK() OVER (ORDER BY votes DESC) AS rank
+            FROM RankedVotes
+        )
+        SELECT messageid, id, votes
+        FROM RankedResults
+        WHERE rank <= ${x};`, function (err, result, fields) {
+            if (err) {
+                reject(err)
+                console.log(err)
+            }
+            if (result)
+                resolve(result)
+            else
+                resolve(null)
+        })
+    })
+}
+
 exports.updateVote = function(id, messageid, guild) {
     connection.pool.query(`UPDATE voted SET messageid='${messageid}' WHERE id='${id}' AND guild='${guild}'`, function (err) {
         if (err) {
