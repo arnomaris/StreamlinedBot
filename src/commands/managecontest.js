@@ -208,7 +208,7 @@ module.exports = {
             break
         case 'getwinners':
             await interaction.deferReply()
-            const amount = interaction.options.getMember('amount')
+            const amount = interaction.options.getNumber('amount')
             await photocontestHandler.getWinners(interaction.guild.id, amount).then(votes => createVotesEmbed(interaction, votes))
             break
         case 'reset':

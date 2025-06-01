@@ -146,19 +146,26 @@ exports.getWinners = function(guild, x = 1) {
     return new Promise((resolve, reject) => {
         connection.pool.query(`
         WITH RankedVotes AS (
-            SELECT p.messageid, p.id, COUNT(v.id) AS votes
+            SELECT 
+                p.messageid, 
+                p.id, 
+                COUNT(v.id) AS votes,
+                DENSE_RANK() OVER (ORDER BY COUNT(v.id) DESC) AS rank
             FROM voted AS v 
             RIGHT OUTER JOIN photocontest AS p ON v.messageid = p.messageID
             WHERE p.guild = '${guild}'
-            GROUP BY p.messageid
-        ),
-        RankedResults AS (
-            SELECT *, DENSE_RANK() OVER (ORDER BY votes DESC) AS rank
-            FROM RankedVotes
+            GROUP BY p.messageid, p.id -- Include p.id in GROUP BY
         )
-        SELECT messageid, id, votes
-        FROM RankedResults
-        WHERE rank <= ${x};`, function (err, result, fields) {
+        SELECT 
+            messageid, 
+            id, 
+            votes
+        FROM RankedVotes
+        WHERE rank <= (
+            SELECT DENSE_RANK(MAX(votes)) WITHIN GROUP (ORDER BY votes DESC)
+            FROM RankedVotes
+            LIMIT ${x}
+        );`, function (err, result, fields) {
             if (err) {
                 reject(err)
                 console.log(err)

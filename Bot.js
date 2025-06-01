@@ -102,8 +102,18 @@ client.on('messageCreate', async message => {
 			if (message.member.dmChannel)
 				message.member.dmChannel.send(`Your message in creations was removed due to not containing any images/creations. If you wish to give feedback on someone's post you can do it in the dedicated thread.`).catch(err => {})
         }
-    }
+	}
 })
+
+client.on('threadCreate', async thread => {
+	console.log(thread)
+	if (thread.parent.name == 'suggestions') {
+		const suggestionMessage = await thread.fetchStarterMessage();
+		if (suggestionMessage) {
+			suggestionMessage.react('<:upvote:1074049963123822592>').catch(() => {});
+		}
+	}
+});
 
 client.login(process.env.DISCORD_TOKEN);
 connection.connect()
