@@ -18,16 +18,17 @@ module.exports = {
         }
 
         await interaction.deferReply()
-        const members = await interaction.guild.members.cache
-        const unverifiedMembers = members.filter(member => !member.roles.cache.has(verifiedRole.id));
-        console.log(`Found ${unverifiedMembers.size} unverified members.`);
+        await interaction.guild.members.fetch()
+        const members = interaction.guild.members.cache;
+        const newUnverifiedMembers = members.filter(member => !member.roles.cache.has(verifiedRole.id) && !member.roles.cache.has(unverifiedRole.id) && !member.user.bot);
+        console.log(`Found ${newUnverifiedMembers.size} unverified members.`);
 
-        if (unverifiedMembers.size === 0) {
+        if (newUnverifiedMembers.size === 0) {
             return interaction.editReply({ content: 'All members are verified.' });
         }
 
         const successCount = [];
-        for (const member of unverifiedMembers.values()) {
+        for (const member of newUnverifiedMembers.values()) {
             try {
                 await member.roles.add(unverifiedRole);
                 successCount.push(member.user.username);
