@@ -6,7 +6,7 @@ module.exports = {
         name: 'reset_contest'
     },
     async execute(interaction) {
-        await interaction.deferReply(interaction.guild.id)
+        await interaction.deferReply({ ephemeral: true });
         photocontestHandler.clearEntries(interaction.guild.id)
         photocontestHandler.clearVotes(interaction.guild.id)
 
