@@ -53,7 +53,7 @@ module.exports = {
                     embed.setTitle('Bug Fixed');
                     embed.setDescription('This bug has been fixed and will be included in the next update.');
                     break;
-                case 'Fixed in future':
+                case 'Fixed in future update':
                     embed.setColor('#00FF00');
                     embed.setTitle('Bug Fixed in Future Update');
                     embed.setDescription('This bug has been fixed and will be included in a future update.');
