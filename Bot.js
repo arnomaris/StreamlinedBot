@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, MessageFlags } = require('discord.js');
 const connection = require('./src/database/connection.js')
 const express = require('express')
 const { createProxyMiddleware } = require('http-proxy-middleware');
@@ -62,7 +62,7 @@ client.on('interactionCreate', async interaction => {
 		else if (interaction.replied)
 			await interaction.editReply({ content: 'There was an error while executing this command!' })
 		else
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral })
 		
 	}
 })
@@ -82,7 +82,7 @@ client.on('interactionCreate', async interaction => {
 		else if (interaction.replied)
 			await interaction.edit({ content: 'There was an error while executing this button!' })
 		else
-			await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true })
+			await interaction.reply({ content: 'There was an error while executing this button!', flags: MessageFlags.Ephemeral })
 		
 	}
 })

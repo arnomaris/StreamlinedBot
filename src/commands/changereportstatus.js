@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
 					{ name: 'Not a bug', value: 'Not a bug' },
 					{ name: 'Roblox', value: 'Roblox' },
 					{ name: 'Fixed', value: 'Fixed next update' },
-					{ name: 'Fixed in future', value: 'Fixed in future upd' },
+					{ name: 'Fixed in future update', value: 'Fixed in future upd' },
 					{ name: 'Fixed in new servers', value: 'Fixed in new servers' },
 					{ name: 'Not fixing', value: 'Not fixing' },
 				)),
@@ -72,14 +72,15 @@ module.exports = {
                     break;
             }
 
-            if (embed.data.title) {
+            if (embed) {
                 await interaction.channel.send({ embeds: [embed] });
             }
             const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === status).id
             interaction.channel.setAppliedTags([tagId]);
-            await interaction.reply({ content: "Updated report status!", ephemeral: true });
+            await interaction.reply({ content: "Updated report status!", flags: MessageFlags.Ephemeral });
+            interaction.reply()
         } else {
-            interaction.reply({ content: "This command does not work in this channel!", ephemeral: true })
+            interaction.reply({ content: "This command does not work in this channel!", flags: MessageFlags.Ephemeral })
         }
     }
 };
