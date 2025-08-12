@@ -12,10 +12,13 @@ const messageAnswers = {
     insta: '<https://www.instagram.com/streamlinedroblox/>',
     reddit: '<https://www.reddit.com/r/StreamlinedRoblox/>',
     courant: '<https://wiki.playstreamlined.com/Voorlemsche_Courant_Archive/>',
+    tiktok: '<https://www.tiktok.com/@streamlinedroblox>',
+    youtube: '<https://www.youtube.com/@streamlinedroblox>',
+    x: '<https://twitter.com/PlayStreamlined>',
 }
 
 const funnyMessages = {
-    game: ["Good boy play Streamlined now!", "You shall play streamlined!", "Hmmm... are you sure you want to play Streamlined?", "Cheeselined", "Lets play fetch with doggo cows!", "Streamlined time!", "Lets a play Streamlined!", "Streamlined, yes *yes* **yes**"],
+    game: ["You shall play streamlined!", "Hmmm... are you sure you want to play Streamlined?", "Cheeselined", "Lets play fetch with doggo cows!", "Streamlined time!", "Lets a play Streamlined!", "Streamlined, yes *yes* **yes**"],
     roadmap: ["🔮*Gazes in future*🔮 this is what Streamlined will look like in 2030!", "I came from the future, I know what Streamlined is going to look like! *Shhh don't tell anyone*", "This game is gonna look hella lit", "OOooo shiny pretty things are going to come!"],
     wiki: ["Gain knowledge my young one!", "BRAINNNNNNN KNOWLEDGE", "It's like Streamlined but only the info!", "Some awesome people made this", "For the community by the community"],
     discord: ["Let's get this party started!", "Invite all your friends and extended family!", "Who are you going to invite? *they better be nice*", "Invite them **all**"],
@@ -26,6 +29,9 @@ const funnyMessages = {
     insta: ["Follow us on Instagram!", "We post cool stuff there!", "We have an Instagram!"],
     reddit: ["Join the Reddit community!", "We have a Reddit!", "Join the Reddit community!"],
     courant: ["Read the Voorlemsche Courant!", "Extra! Extra! Read all about it!", "The Voorlemsche Courant!"],
+    tiktok: ["Follow us on TikTok!", "We post cool stuff there!", "We have a TikTok!"],
+    youtube: ["Subscribe to our YouTube channel!", "We post videos there!", "We have a YouTube channel!"],
+    x: ["Follow us on X!", "We post cool stuff there!", "We have a X account!"],
 }
 
 exports.getMessage = function(type) {
