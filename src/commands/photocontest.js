@@ -66,7 +66,7 @@ module.exports = {
                 }
 
                 const attachment = interaction.options.getAttachment('attachment')
-                if (attachment.contentType.endsWith('png') || attachment.contentType.endsWith('jpeg') || attachment.contentType.endsWith('jpg')) {
+                if (attachment.contentType.endsWith('png') || attachment.contentType.endsWith('jpeg') || attachment.contentType.endsWith('jpg') || attachment.contentType.endsWith('webp')) {
                     let lastSubmission = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                         interaction.editReply('Experienced error while checking submission validity, please try again')
                     })
@@ -103,7 +103,8 @@ module.exports = {
                         await interaction.editReply(`You already submitted a picture, use </photocontest delete:${interaction.id}> first if you want to change your entry!`)
                     }
                 } else {
-                    await interaction.editReply('Your submission is not a valid image, only PNG, JPEG or JPG are accepted file types.')
+                    console.log(attachment.contentType)
+                    await interaction.editReply('Your submission is not a valid image, only WEBP, PNG, JPEG or JPG are accepted file types.')
                 }
                 break
             case 'remove': // alias for delete
