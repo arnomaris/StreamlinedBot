@@ -64,7 +64,7 @@ module.exports = {
                     embed.setDescription('This bug has been fixed and is live in new servers only.');
                     break;
                 case 'Not fixing':
-                    embed.setColor('#000000ff');
+                    embed.setColor('#414141');
                     embed.setTitle('Not Fixing');
                     embed.setDescription('This bug is not significant enough to be fixed.');
                     break;
