@@ -9,8 +9,13 @@ StreamlinedBot is a Discord bot designed for the the [Streamlined Discord](disco
 - Voting system: Users can vote on submissions.
 - Moderation tools: Staff can manage contests, remove submissions easily and track votes.
 
+### Utility
+- General utilities to manage the Streamlined Discord more easily.
+- Utilities that allow developers to manage game development from the Discord.
+
 ### What I plan on adding
 - Use RSS feeds to automatically post new social media content.
+- Utility to manage a suggestion channel (warn, block members)
 
 # What I learned
 
