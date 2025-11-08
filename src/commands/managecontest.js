@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, Collection, SnowflakeUtil } = require('discord.js')
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, SnowflakeUtil, MessageFlags, InteractionContextType } = require('discord.js')
 const photocontestHandler = require('./../database/photocontestHandler.js')
 const settingHandler = require('./../database/settingHandler.js')
 
@@ -45,7 +45,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('managecontest')
         .setDescription('Manage the photo contest')
-	    .setDMPermission(false)
+	    .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents)
         .addSubcommand(subcommand =>
             subcommand
@@ -223,7 +223,7 @@ module.exports = {
             interaction.reply({ 
                 content: 'Are you sure you want to reset the contest?', 
                 components: [actionRow],
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             })
             break
         }

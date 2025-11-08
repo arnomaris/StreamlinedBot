@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the youtube channel'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('youtube'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('youtube') })
     }
 };

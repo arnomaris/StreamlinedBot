@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the X account'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('x'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('x') })
     }
 };

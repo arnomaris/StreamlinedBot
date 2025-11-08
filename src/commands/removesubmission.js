@@ -1,4 +1,4 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits, EmbedBuilder, ComponentType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits, EmbedBuilder, ComponentType, MessageFlags, InteractionContextType } = require('discord.js');
 const photocontestHandler = require('./../database/photocontestHandler.js')
 const deletereason = require('../selectmenus/deletereason.js')
 
@@ -13,7 +13,7 @@ module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('Remove submission')
         .setType(ApplicationCommandType.Message)
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents),
     async execute(interaction) {
         const response = await deletereason.execute(interaction);
@@ -22,7 +22,7 @@ module.exports = {
             componentType: ComponentType.StringSelect, 
         }); // create select menu collector
         collector.on("collect", async (selectionInteraction) => {
-            await selectionInteraction.deferReply({ ephemeral: true })
+            await selectionInteraction.deferReply({ flags: MessageFlags.Ephemeral })
             const value = selectionInteraction.values[0] // first value in collector
             const reason = reasons[value]
             const botlogsChannel = interaction.guild.channels.cache.find(channel => channel.name === 'bot-logs')
@@ -54,14 +54,14 @@ module.exports = {
                 }
                 if (user.dmChannel) {
                     user.dmChannel.send({ content: `Your photocontest entry has been removed with the following reason: ${reason}`}).catch(err => {
-                        selectionInteraction.followUp({content: `I failed to send a dm to <@${userId}>!`, ephemeral: true })
+                        selectionInteraction.followUp({content: `I failed to send a dm to <@${userId}>!`, flags: MessageFlags.Ephemeral })
                     })
-                    selectionInteraction.followUp({ content: `I send a dm to <@${userId}> with the reason!`, ephemeral: true })
+                    selectionInteraction.followUp({ content: `I send a dm to <@${userId}> with the reason!`, flags: MessageFlags.Ephemeral })
                 } else {
-                    selectionInteraction.followUp({ content: `I could not send a dm to <@${userId}>, their DMs are closed!`, ephemeral: true })
+                    selectionInteraction.followUp({ content: `I could not send a dm to <@${userId}>, their DMs are closed!`, flags: MessageFlags.Ephemeral })
                 }
             } else {
-                selectionInteraction.followUp({ content: `I could not send a dm to <@${userId}>!`, ephemeral: true })
+                selectionInteraction.followUp({ content: `I could not send a dm to <@${userId}>!`, flags: MessageFlags.Ephemeral })
             }
         });
     }

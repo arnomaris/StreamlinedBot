@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js')
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, MessageFlags, InteractionContextType } = require('discord.js')
 const photocontestHandler = require('./../database/photocontestHandler.js')
 const settingHandler = require('./../database/settingHandler.js')
 
@@ -8,7 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('photocontest')
         .setDescription('Interact with the photo contest')
-	    .setDMPermission(false)
+	    .setContexts(InteractionContextType.Guild)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('submit')
@@ -34,7 +34,7 @@ module.exports = {
         if (interaction.member.roles.cache.find(role => role.name === 'Photo Contest Ban')) {
             interaction.reply({ 
                 content: 'You are currently not allowed to participate in photo contests.', 
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             })
             return
         }
@@ -50,15 +50,15 @@ module.exports = {
             interaction.reply({ 
                 content: 'You are not participating in the photo contest yet, join by clicking the button below.', 
                 components: [actionRow],
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral
             })
             return
         }
         switch(interaction.options.getSubcommand()) {
             case 'submit':
-                await interaction.deferReply({ ephemeral: true })
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral })
                 let photoContestOpen = await settingHandler.getSetting('photocontest', interaction.guild.id).catch(err => {
-                    interaction.reply({content: 'Experienced error while sumbitting your picture', ephemeral: true})
+                    interaction.reply({content: 'Experienced error while sumbitting your picture', flags: MessageFlags.Ephemeral})
                 })
                 if (photoContestOpen === 'false') {
                     interaction.editReply('The photo contest is currently not accepting submissions!')
@@ -109,13 +109,13 @@ module.exports = {
                 break
             case 'remove': // alias for delete
             case 'delete':
-                await interaction.deferReply({ ephemeral: true })
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral })
                 var entryId = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                     interaction.editReply('An error occurred while deleting your entry, please try again')
                 })
                 if (entryId) {
                     let photoContestOpen = await settingHandler.getSetting('photocontest', interaction.guild.id).catch(err => {
-                        interaction.reply({content: 'Experienced error while deleting your picture', ephemeral: true})
+                        interaction.reply({content: 'Experienced error while deleting your picture', flags: MessageFlags.Ephemeral})
                     })
                     if (photoContestOpen === 'false') {
                         interaction.editReply('The photo contest closed, you can no longer remove your submission!')
@@ -145,7 +145,7 @@ module.exports = {
                 }
                 break
             case 'checkout':
-                await interaction.deferReply({ ephemeral: true })
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral })
                 var entryId = await photocontestHandler.getMessage(interaction.user.id, interaction.guild.id).catch(err => {
                     interaction.editReply('Experienced error while getting your submission')
                 })
@@ -175,7 +175,7 @@ module.exports = {
                 }
                 break
             case 'voted':
-                await interaction.deferReply({ephemeral: true})
+                await interaction.deferReply({flags: MessageFlags.Ephemeral})
                 let voteId = await photocontestHandler.getVote(interaction.user.id, interaction.guild.id)
                 if (voteId) {
                     let photocontestChannel = interaction.guild.channels.cache.find(channel => channel.name === 'photo-contest');

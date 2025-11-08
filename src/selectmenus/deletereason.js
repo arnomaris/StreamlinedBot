@@ -1,4 +1,4 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, SlashCommandBuilder } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     async execute(interaction) {
@@ -30,7 +30,7 @@ module.exports = {
 		return await interaction.reply({
 			content: 'Select a reason for deletion',
 			components: [row],
-            ephemeral: true 
+            flags: MessageFlags.Ephemeral 
 		});
     },
 }

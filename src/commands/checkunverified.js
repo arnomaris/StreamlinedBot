@@ -1,20 +1,20 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, Collection, SnowflakeUtil } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags, InteractionContextType } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('checkunverified')
         .setDescription('Adds the unverified role to all members that are not verified')
-	    .setDMPermission(false)
+	    .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         const unverifiedRole = interaction.guild.roles.cache.find(role => role.name === 'Unverified');
         if (!unverifiedRole) {
-            return interaction.reply({ content: 'Unverified role not found.', ephemeral: true });
+            return interaction.reply({ content: 'Unverified role not found.', flags: MessageFlags.Ephemeral });
         }
 
         const verifiedRole = interaction.guild.roles.cache.find(role => role.name === 'Verified');
         if (!verifiedRole) {
-            return interaction.reply({ content: 'Verified role not found.', ephemeral: true });
+            return interaction.reply({ content: 'Verified role not found.', flags: MessageFlags.Ephemeral });
         }
 
         await interaction.deferReply()

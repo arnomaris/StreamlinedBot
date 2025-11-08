@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, SnowflakeUtil } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,9 +20,9 @@ module.exports = {
             const tagId = interaction.channel.parent.availableTags.find(tag => tag.name === tagName).id
             interaction.channel.setAppliedTags([tagId])
             interaction.channel.send({ content: `Tag \`${tagName}\` applied by \`${interaction.user.username}\`` })
-            interaction.reply({ content: "Applied tag!", ephemeral: true })
+            interaction.reply({ content: "Applied tag!", flags: MessageFlags.Ephemeral })
         } else {
-            interaction.reply({ content: "This command does not work in this channel!", ephemeral: true })
+            interaction.reply({ content: "This command does not work in this channel!", flags: MessageFlags.Ephemeral })
         }
     }
 };

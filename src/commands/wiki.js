@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const randomMessage = require('./../utility/randomMessage.js');
 
 module.exports = {
@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the wiki'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('wiki'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('wiki'), flags: MessageFlags.Ephemeral })
     }
 };

@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the tutorial'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('tutorial'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('tutorial') })
     }
 };

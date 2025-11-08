@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the discord'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('discord'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('discord') })
     }
 };

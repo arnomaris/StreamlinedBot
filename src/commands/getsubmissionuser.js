@@ -1,14 +1,14 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits, MessageFlags, InteractionContextType } = require('discord.js');
 const photocontestHandler = require('./../database/photocontestHandler.js')
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('Get user')
         .setType(ApplicationCommandType.Message)
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents),
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const messageId = interaction.targetMessage.id
         let userId = await photocontestHandler.getEntry(messageId, interaction.guild.id).catch(err => {
             interaction.editReply('Experienced error while getting user')

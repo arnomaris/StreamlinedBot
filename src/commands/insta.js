@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the instagram account'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('insta'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('insta') })
     }
 };

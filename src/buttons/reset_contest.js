@@ -1,3 +1,4 @@
+const { MessageFlags } = require("discord.js");
 const photocontestHandler = require('./../database/photocontestHandler.js')
 const settingHandler = require('./../database/settingHandler.js')
 
@@ -6,7 +7,7 @@ module.exports = {
         name: 'reset_contest'
     },
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         photocontestHandler.clearEntries(interaction.guild.id)
         photocontestHandler.clearVotes(interaction.guild.id)
 

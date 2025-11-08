@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the game'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('game'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('game') })
     }
 };

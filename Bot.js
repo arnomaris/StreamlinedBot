@@ -42,7 +42,7 @@ app.get('/', (_req, res) => {
 	res.redirect('https://playstreamlined.com')
 })
 
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log(`Logged in as ${client.user.tag}!`)
 });
 

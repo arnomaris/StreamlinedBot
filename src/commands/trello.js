@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the roadmap'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('roadmap'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('roadmap') })
     }
 };

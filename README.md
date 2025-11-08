@@ -1,6 +1,6 @@
 # StreamlinedBot
 
-StreamlinedBot is a Discord bot designed for the the [Streamlined Discord](discord.gg/streamlined). It can host anonymous photocontests, general utilities and social media link management.
+StreamlinedBot is a Discord bot designed for the the [Streamlined Discord](discord.gg/streamlined). It can host anonymous photocontests, contains general utilities and social media link management.
 
 ## Features
 
@@ -17,7 +17,7 @@ StreamlinedBot is a Discord bot designed for the the [Streamlined Discord](disco
 This project helped me improve my knowledge of JavaScript and taught me how to:
 - Use promises properly
 - Work with the Discord.js library
-- Design modular command structures (which I since have used in other projects)
+- Design modular command structures
 - Handle database operations with MySQL
 - Host applications on Heroku
 

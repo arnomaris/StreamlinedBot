@@ -7,6 +7,6 @@ module.exports = {
         .setDescription('Get the link to the ost'),
     async execute(interaction) {
 
-        await interaction.reply({ content: randomMessage.getMessage('ost'), ephemeral: false })
+        await interaction.reply({ content: randomMessage.getMessage('ost') })
     }
 };
