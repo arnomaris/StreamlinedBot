@@ -95,7 +95,6 @@ client.on('messageCreate', async message => {
             message.react('👍').catch((err) => {})
         } else {
             await message.delete().catch((err) => {})
-			console.log(message.member.dmChannel)
 			if (!message.member.dmChannel) {
 				await message.member.createDM()
 			}
@@ -106,7 +105,6 @@ client.on('messageCreate', async message => {
 })
 
 client.on('threadCreate', async thread => {
-	console.log(thread)
 	if (thread.parent.name == 'suggestions') {
 		const suggestionMessage = await thread.fetchStarterMessage();
 		if (suggestionMessage) {

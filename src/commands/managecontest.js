@@ -178,7 +178,6 @@ module.exports = {
 
             let entries = await photocontestHandler.getEntries(interaction.guild.id)
             entries.sort((entryA, entryB) => SnowflakeUtil.timestampFrom(entryA.messageid) - SnowflakeUtil.timestampFrom(entryB.messageid))
-            console.log(entries[0])
 
             var actionRow = new ActionRowBuilder()
                 .addComponents(

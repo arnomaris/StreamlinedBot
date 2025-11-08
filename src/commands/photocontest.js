@@ -103,7 +103,6 @@ module.exports = {
                         await interaction.editReply(`You already submitted a picture, use </photocontest delete:${interaction.id}> first if you want to change your entry!`)
                     }
                 } else {
-                    console.log(attachment.contentType)
                     await interaction.editReply('Your submission is not a valid image, only WEBP, PNG, JPEG or JPG are accepted file types.')
                 }
                 break
